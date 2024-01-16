@@ -28,6 +28,8 @@ class Env:
             'tab:pink','tab:gray','tab:olive','tab:cyan']*10
         self.hull_points = [None]*MAX_NUMBER_LANGUAGES
 
+        self.curr_map = np.zeros((MAX_NUMBER_LANGUAGES,100,100))
+
         #self.competition_matrix = np.zeros((10,10))+0.5
 
         
@@ -66,7 +68,10 @@ class Env:
                 #ax3 = plt.subplot2grid((3, 4), (1,3), rowspan=1)
                 #ax4 = plt.subplot2grid((3, 4), (2,3), rowspan=1)
 
-                p = np.zeros((100,100,MAX_NUMBER_LANGUAGES)) #10 colors
+                p = np.zeros((MAX_NUMBER_LANGUAGES, 100,100)) #10 colors
+
+                self.curr_map = p
+
                 #print('len: ', len(self.languages))
                 for i,l in enumerate(self.languages):
                     
@@ -80,11 +85,11 @@ class Env:
                 #p[(p == [1, 1, 1]).all(axis=-1)] = [0,0,0]
                         #_ = np.zeros((100,100))
                         #p[:,:,i] = _[np.where(l.map > 0)] = 1
-                        p[:,:,i] = l.map
+                        p[i,:,:] = l.map
                         cmap = colors.ListedColormap(['white', self.color_list[i]])
                         bounds=[0,0.01,1]
                         norm = colors.BoundaryNorm(bounds, cmap.N)
-                        ax1.imshow(p[:,:,i], alpha=0.75, interpolation='nearest', origin='lower', cmap=cmap, norm=norm)
+                        ax1.imshow(p[i,:,:], alpha=0.75, interpolation='nearest', origin='lower', cmap=cmap, norm=norm)
                         ax1.set_xticks(np.arange(0, 100, 10))
                         ax1.set_yticks(np.arange(0, 100, 10))
 
@@ -92,7 +97,7 @@ class Env:
                 if True:
                     if len([l for l in self.languages if l is not None]) > 0:
                         for i in range(MAX_NUMBER_LANGUAGES):  # Assuming you have three color groups
-                                indices = np.where((p[:, :, i] > 0)&(p[:, :, i] <= 1))  # Change the condition based on your data
+                                indices = np.where((p[i,:, :] > 0)&(p[i, :, :] <= 1))  # Change the condition based on your data
                                 x = indices[1]
                                 y = indices[0]  # Invert y-axis if needed
                                 if len(x) > 5:
@@ -193,7 +198,10 @@ class Env:
         if self.languages.count(None) > 5:
             for i,l in enumerate(self.languages):
                 if l is None:
-                    if np.random.rand() < 0.1:
+                    if np.random.rand() < 0.01:
+                        
+                        
+
                         self.languages[i] = Language(
                             (np.random.randint(0,100),np.random.randint(0,100)),
                             'Blues', self.t)
