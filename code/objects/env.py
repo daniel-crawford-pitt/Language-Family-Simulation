@@ -15,19 +15,20 @@ from copy import deepcopy
 sys.path.insert(0, 'C:/Users\dcraw\OneDrive\Desktop\Language Family Simulation\code\objects')
 from language import *
 
+MAX_NUMBER_LANGUAGES = 25
 
 class Env:
     def __init__(self):
-        self.languages = [None]*10
+        self.languages = [None]*MAX_NUMBER_LANGUAGES
         self.map = np.zeros([101,101])
         self.t = 0
         self.color_list = [
             'tab:blue','tab:orange','tab:green',
             'tab:red','tab:purple','tab:brown',
-            'tab:pink','tab:gray','tab:olive','tab:cyan']
-        self.hull_points = [None]*10
+            'tab:pink','tab:gray','tab:olive','tab:cyan']*10
+        self.hull_points = [None]*MAX_NUMBER_LANGUAGES
 
-        self.competition_matrix = np.zeros((10,10))+0.5
+        #self.competition_matrix = np.zeros((10,10))+0.5
 
         
 
@@ -65,7 +66,7 @@ class Env:
                 #ax3 = plt.subplot2grid((3, 4), (1,3), rowspan=1)
                 #ax4 = plt.subplot2grid((3, 4), (2,3), rowspan=1)
 
-                p = np.zeros((100,100,10)) #10 colors
+                p = np.zeros((100,100,MAX_NUMBER_LANGUAGES)) #10 colors
                 #print('len: ', len(self.languages))
                 for i,l in enumerate(self.languages):
                     
@@ -90,7 +91,7 @@ class Env:
 
                 if True:
                     if len([l for l in self.languages if l is not None]) > 0:
-                        for i in range(10):  # Assuming you have three color groups
+                        for i in range(MAX_NUMBER_LANGUAGES):  # Assuming you have three color groups
                                 indices = np.where((p[:, :, i] > 0)&(p[:, :, i] <= 1))  # Change the condition based on your data
                                 x = indices[1]
                                 y = indices[0]  # Invert y-axis if needed
@@ -172,7 +173,7 @@ class Env:
 
 
                     #Find other patches:
-                    for j in [k for k in [0,1,2,3,4,5,6,7,8,9] if k != i]:
+                    for j in [k for k in list(np.arange(0,MAX_NUMBER_LANGUAGES,1)) if k != i]:
                         if self.hull_points[j] is not None and l.momentum <= self.languages[j].momentum:
                             
                             #print(l.momentum)
