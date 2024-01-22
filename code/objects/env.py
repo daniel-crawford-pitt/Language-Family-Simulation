@@ -15,7 +15,7 @@ from copy import deepcopy
 sys.path.insert(0, 'C:/Users\dcraw\OneDrive\Desktop\Language Family Simulation\code\objects')
 from language import *
 
-MAX_NUMBER_LANGUAGES = 25
+MAX_NUMBER_LANGUAGES = 10
 NUM_INIT_LANGS = 5
 FIELD_SIZE_TUPLE = (100,100)
 
@@ -157,7 +157,7 @@ class Env:
             self.do_start()
         self.do_moves()
         #self.do_births()
-        #self.do_deaths()        
+        self.do_deaths()        
         self.do_splits()
         #self.do_competitions()
 
@@ -212,7 +212,7 @@ class Env:
 
                     #Find other patches:
                     for j in [k for k in list(np.arange(0,MAX_NUMBER_LANGUAGES,1)) if k != i]:
-                        if self.hull_points[j] is not None and l.momentum <= self.languages[j].momentum:
+                        if self.hull_points[j] is not None and self.languages[j] is not None and l.momentum <= self.languages[j].momentum:
                             
                             #print(l.momentum)
                             #print(self.languages[i].momentum)
@@ -243,8 +243,10 @@ class Env:
     def do_deaths(self):
         for i,l in enumerate(self.languages):
             if l is not None:
-                l.death()
-                if np.sum(l.map) < 1: self.languages[i] = None
+                #l.death()
+                if (l.map == 0).all(): 
+                    self.languages[i] = None
+                    print('DEATH HAPPENS')
 
 
     def do_splits(self):
