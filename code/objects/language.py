@@ -19,7 +19,12 @@ class Language:
 
         self.directionalization = np.random.random(4)
 
-        self.momentum = np.random.random()
+        self.A = 20*np.random.random()-10
+        self.p = 20*np.random.random()-10
+        self.momentum = 0
+        
+    def update_momentum(self, t):
+        self.momentum = self.A * np.sin(self.p*t)
 
 
     def step(self, other_ling_area):

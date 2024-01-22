@@ -155,6 +155,8 @@ class Env:
     def step(self):
         if self.t == 0:
             self.do_start()
+        else:
+            self.do_update_momentums()
         self.do_moves()
         #self.do_births()
         self.do_deaths()        
@@ -163,6 +165,11 @@ class Env:
 
 
         self.t += 1
+
+    def do_update_momentums(self):
+        for l in self.languages:
+            if l is not None:
+                l.update_momentum(self.t)
 
     def do_start(self):
         temp_map = np.zeros(FIELD_SIZE_TUPLE)
@@ -188,11 +195,8 @@ class Env:
         self.languages[self.languages.index(None)] = Language(
             centroid, color, start_time, start_map
         )
-
-        
-                        
-
-
+      
+                    
 
     def do_moves(self):
         for i,l in enumerate(self.languages):
@@ -276,13 +280,13 @@ class Env:
                         l.map = deepcopy(_)
 
                         #At first blank space in language list
-                        new_l_index = self.languages.index(None)
-                        self.languages[new_l_index] = Language(
-                            (np.random.randint(0,100),np.random.randint(0,100)),
-                            'Blues', self.t)
                         _ = np.zeros((100,100))
                         for p in cluster2: _[p[0],p[1]] = 1
-                        self.languages[new_l_index].map = deepcopy(_)
+                        #self.languages[new_l_index].map = 
+
+                        self.languages[self.languages.index(None)] = Language(
+                            None, np.random.choice(self.color_list), self.t, deepcopy(_)
+                        )
 
                         print("SPLIT HAPPENS")
 
