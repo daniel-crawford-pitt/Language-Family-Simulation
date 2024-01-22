@@ -16,6 +16,8 @@ sys.path.insert(0, 'C:/Users\dcraw\OneDrive\Desktop\Language Family Simulation\c
 from language import *
 
 MAX_NUMBER_LANGUAGES = 25
+NUM_INIT_LANGS = 5
+FIELD_SIZE_TUPLE = (100,100)
 
 class Env:
     def __init__(self):
@@ -151,14 +153,45 @@ class Env:
 
 
     def step(self):
+        if self.t == 0:
+            self.do_start()
         self.do_moves()
-        self.do_births()
-        #self.do_deaths()
+        #self.do_births()
+        #self.do_deaths()        
         self.do_splits()
         #self.do_competitions()
 
 
         self.t += 1
+
+    def do_start(self):
+        temp_map = np.zeros(FIELD_SIZE_TUPLE)
+        points = np.argwhere(temp_map == 0)
+        kmeans = MiniBatchKMeans(n_clusters=NUM_INIT_LANGS, init='random').fit(points)
+        preds = kmeans.predict(points)      
+        
+        for i in np.unique(preds):
+
+            new_map = np.zeros((100,100))
+            for p in np.reshape(points[np.argwhere(preds == i)],(-1,2)):
+                new_map[p[0],p[1]] = 1
+
+            self.add_language(
+                centroid = kmeans.cluster_centers_.astype(int),
+                color = np.random.choice(self.color_list),
+                start_time = 0,
+                start_map = deepcopy(new_map)
+            )
+    
+    def add_language(self, centroid, color, start_time, start_map):
+
+        self.languages[self.languages.index(None)] = Language(
+            centroid, color, start_time, start_map
+        )
+
+        
+                        
+
 
 
     def do_moves(self):
@@ -216,14 +249,14 @@ class Env:
 
     def do_splits(self):
         for i,l in enumerate(self.languages):
-            if l is not None and self.languages.count(None) < 9 and self.languages.count(None) > 1:
-                 if np.random.rand() < 0.005:
+            if l is not None and None in self.languages:
+                 if np.random.rand() < 0.01:
 
                     # Assuming you have a numpy array of points in the form [(x1, y1), (x2, y2), ...]
                     (As, Bs) = np.where(l.map > 0.001)
                     points = [[a,b] for a, b in zip(As, Bs)]     
                     if len(points) > 30:
-                        # Use PCA to find the principal components
+
                         kmeans = MiniBatchKMeans(n_clusters=2, init='random').fit(points)
                         preds = kmeans.predict(points)
 

@@ -6,13 +6,16 @@ from simulation.sim_main import *
 
 
 class Language:
-    def __init__(self, starting_point, color, start_time):
+    def __init__(self, starting_point, color, start_time, start_map = None):
         self.starting_point = starting_point #think about this
         self.color = color
         self.start_time = start_time
 
-        self.map = np.zeros([100,100])
-        self.map[starting_point[0]][starting_point[1]] = 1
+        if start_map is None:
+            self.map = np.zeros([100,100])
+            self.map[starting_point[0]][starting_point[1]] = 1
+        else:
+            self.map = start_map
 
         self.directionalization = np.random.random(4)
 
