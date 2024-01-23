@@ -1,0 +1,6 @@
+{
+    "MAX_NUMBER_LANGUAGES": 25,
+    "NUM_INIT_LANGS":  5,
+    "FIELD_SIZE_TUPLE": [100,100]
+
+}

@@ -10,14 +10,14 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans, MiniBatchKMeans
 from scipy.spatial.distance import cdist
 from copy import deepcopy
-
+import os
 
 sys.path.insert(0, 'C:/Users\dcraw\OneDrive\Desktop\Language Family Simulation\code\objects')
 from language import *
 
-MAX_NUMBER_LANGUAGES = 10
-NUM_INIT_LANGS = 5
-FIELD_SIZE_TUPLE = (100,100)
+MAX_NUMBER_LANGUAGES = int(os.environ.get("MAX_NUMBER_LANGUAGES"))
+NUM_INIT_LANGS = int(os.environ.get("NUM_INIT_LANGS")) 
+FIELD_SIZE_TUPLE = (100,100)#tuple(os.environ["FIELD_SIZE_TUPLE"])
 
 class Env:
     def __init__(self):
