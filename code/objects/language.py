@@ -7,7 +7,7 @@ from simulation.sim_main import *
 
 
 class Language:
-    def __init__(self, starting_point, color, start_time, start_map = None):
+    def __init__(self, starting_point, color, start_time, start_map = None, prev_history = ""):
         self.starting_point = starting_point #think about this
         self.color = color
         self.start_time = start_time
@@ -18,8 +18,11 @@ class Language:
         else:
             self.map = start_map
 
-        self.directionalization = np.random.random(4)
+        #self.directionalization = np.random.random(4)
+        
 
+        self.history = prev_history + "START_" + str(start_time) + '_L' + str(os.environ.get('LANG_ID_CTR')).zfill(3) + '_'
+        os.environ['LANG_ID_CTR'] = str(int(os.environ.get('LANG_ID_CTR'))+1)
 
         match os.environ.get('MOMENTUM_FUNC_CLASS'):
             case 'SIN':

@@ -63,7 +63,10 @@ class Env:
                 fig.clear()
 
                 self.step()
-                if self.t%100 == 0: print(self.t)
+                if self.t%100 == 0:
+                    print(self.t)
+                    for l in self.languages:
+                        if l is not None: print(l.history)
 
                 ax1 = plt.subplot2grid((3, 4), (0, 0), colspan=3, rowspan = 3)
                 #ax2 = plt.subplot2grid((3, 4), (0,3), rowspan=1)
@@ -285,10 +288,11 @@ class Env:
                         #self.languages[new_l_index].map = 
 
                         self.languages[self.languages.index(None)] = Language(
-                            None, np.random.choice(self.color_list), self.t, deepcopy(_)
+                            None, np.random.choice(self.color_list), self.t, deepcopy(_), prev_history=l.history
                         )
 
                         print("SPLIT HAPPENS")
+                        
 
 
                         
