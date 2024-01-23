@@ -12,6 +12,9 @@ def read_config():
     os.environ["NUM_INIT_LANGS"] = str(config["NUM_INIT_LANGS"])
     os.environ["FIELD_SIZE_TUPLE"] = str(config["FIELD_SIZE_TUPLE"])
 
+    os.environ["MOMENTUM_FUNC_CLASS"] = str(config["MOMENTUM_FUNC_CLASS"])
+    os.environ["MOMENTUM_FUNC_STATIC_BOOL"] = str(config["MOMENTUM_FUNC_STATIC_BOOL"])
+
     print('Config Read!')
  
 if __name__ == "__main__":

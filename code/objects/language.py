@@ -1,5 +1,6 @@
 import numpy as np
 import random as r
+import os
 from scipy.ndimage import binary_dilation
 
 from simulation.sim_main import *
@@ -19,12 +20,25 @@ class Language:
 
         self.directionalization = np.random.random(4)
 
-        self.A = 20*np.random.random()-10
-        self.p = 20*np.random.random()-10
-        self.momentum = 0
+
+        match os.environ.get('MOMENTUM_FUNC_CLASS'):
+            case 'SIN':
+                self.A = 20*np.random.random()-10
+                self.p = 20*np.random.random()-10
+                self.momentum = self.A * np.sin(self.p*t)
+            case 'CONSTANT':
+                self.m = np.random.random()
+                self.momentum = self.m
+            
+        
         
     def update_momentum(self, t):
-        self.momentum = self.A * np.sin(self.p*t)
+        match os.environ.get('MOMENTUM_FUNC_CLASS'):
+            case 'SIN':
+                self.momentum = self.A * np.sin(self.p*t)
+            case 'CONSTANT':
+                self.momentum = self.m
+        
 
 
     def step(self, other_ling_area):

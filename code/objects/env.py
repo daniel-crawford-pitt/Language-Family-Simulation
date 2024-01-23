@@ -156,7 +156,7 @@ class Env:
         if self.t == 0:
             self.do_start()
         else:
-            self.do_update_momentums()
+            if not bool(os.environ.get("MOMENTUM_FUNC_STATIC_BOOL")): self.do_update_momentums()
         self.do_moves()
         #self.do_births()
         self.do_deaths()        
