@@ -14,6 +14,7 @@ import os
 
 sys.path.insert(0, 'C:/Users\dcraw\OneDrive\Desktop\Language Family Simulation\code\objects')
 from language import *
+from parse_history import *
 
 MAX_NUMBER_LANGUAGES = int(os.environ.get("MAX_NUMBER_LANGUAGES"))
 NUM_INIT_LANGS = int(os.environ.get("NUM_INIT_LANGS")) 
@@ -68,28 +69,14 @@ class Env:
                     for l in self.languages:
                         if l is not None: print(l.history)
 
-                ax1 = plt.subplot2grid((3, 4), (0, 0), colspan=3, rowspan = 3)
-                #ax2 = plt.subplot2grid((3, 4), (0,3), rowspan=1)
-                #ax3 = plt.subplot2grid((3, 4), (1,3), rowspan=1)
-                #ax4 = plt.subplot2grid((3, 4), (2,3), rowspan=1)
-
+                ax1 = plt.subplot2grid((1, 2), (0, 0), colspan=1, rowspan = 1)             
+                
                 p = np.zeros((MAX_NUMBER_LANGUAGES, 100,100)) #10 colors
 
                 self.curr_map = p
-
-                #print('len: ', len(self.languages))
                 for i,l in enumerate(self.languages):
-                    
-                    #print(i)
-                    #print('p-shape: ',p.shape)
                     if l is not None: 
                         
-
-                
-                #p[(p == [0, 0, 0]).all(axis=-1)] = [255,255,255]
-                #p[(p == [1, 1, 1]).all(axis=-1)] = [0,0,0]
-                        #_ = np.zeros((100,100))
-                        #p[:,:,i] = _[np.where(l.map > 0)] = 1
                         p[i,:,:] = l.map
                         cmap = colors.ListedColormap(['white', self.color_list[i]])
                         bounds=[0,0.01,1]
@@ -127,7 +114,15 @@ class Env:
                        
                          ax.set_ylim(0,1.1)
                     """
+                
+                ax2 = plt.subplot2grid((1, 2), (0, 1), colspan=1, rowspan = 1) 
+                hist_scatter = history_figure([l.history for l in self.languages if l is not None], test_mode = False)
 
+                ax2.scatter(hist_scatter['x'],hist_scatter['y'])
+                for i, txt in enumerate(hist_scatter['labels']):
+                    ax2.annotate(txt, (hist_scatter['x'][i], hist_scatter['y'][i]))
+                
+                ax2.set_axis_off()
                 plt.subplots_adjust(wspace = 0.4, hspace=0.4)
 
 
