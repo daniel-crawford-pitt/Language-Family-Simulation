@@ -1,0 +1,5 @@
+"MAX_NUMBER_LANGUAGES": Maximum number of languages permitted in sim at any one time
+"NUM_INIT_LANGS":  Number of languages that start at the beginning of simulation
+"FIELD_SIZE_TUPLE": [100,100],
+"MOMENTUM_FUNC_CLASS": "CONSTANT",
+"MOMENTUM_FUNC_STATIC_BOOL": "false"
