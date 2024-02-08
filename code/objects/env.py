@@ -18,7 +18,13 @@ from parse_history import *
 from object_utils import *
 
 MAX_NUMBER_LANGUAGES = int(os.environ.get("MAX_NUMBER_LANGUAGES"))
-NUM_INIT_LANGS = int(os.environ.get("NUM_INIT_LANGS")) 
+NUM_INIT_LANGS = int(os.environ.get("NUM_INIT_LANGS"))
+
+SHOW_CONCAVE_HULL = bool(os.environ.get("SHOW_CONCAVE_HULL"))
+SHOW_TREE_DIAGRAM = bool(os.environ.get("SHOW_TREE_DIAGRAM"))
+
+print(SHOW_TREE_DIAGRAM)
+
 FIELD_SIZE_TUPLE = (100,100)#tuple(os.environ["FIELD_SIZE_TUPLE"])
 
 class Env:
@@ -85,7 +91,7 @@ class Env:
                         ax1.set_yticks(np.arange(0, 100, 10))
 
 
-                if True:
+                if SHOW_CONCAVE_HULL:
                     if len([l for l in self.languages if l is not None]) > 0:
                         for i in range(MAX_NUMBER_LANGUAGES):  
                                 indices = np.where((p[i,:, :] > 0)&(p[i, :, :] <= 1))  # Change the condition based on your data
@@ -113,38 +119,38 @@ class Env:
                        
                          ax.set_ylim(0,1.1)
                     """
+                if SHOW_TREE_DIAGRAM:
+                    ax2 = plt.subplot2grid((1, 2), (0, 1), colspan=1, rowspan = 1) 
+                    
+                    #We are getting the first entry in array being INITIAL - will need to work on this
+                    
+                    hist_scatter = history_figure([l.history for l in self.languages if l is not None], test_mode = False)
                 
-                ax2 = plt.subplot2grid((1, 2), (0, 1), colspan=1, rowspan = 1) 
-                
-                #We are getting the first entry in array being INITIAL - will need to work on this
-                
-                hist_scatter = history_figure([l.history for l in self.languages if l is not None], test_mode = False)
-               
-                ax2.scatter(
-                    hist_scatter['x'],
-                    #hist_scatter['y'],
-                    #[self.t]*len(hist_scatter['y']),
-                    hist_scatter['t_start'],
-                    c = [l.color for l in self.languages if l is not None]
-                            )
-                
-                connectors = []
-                for n in preorder_iter(hist_scatter['tree']):
-                    if n.name != 'INITIAL':
-                        connectors = connectors + [((n.get_attr('x'),n.get_attr('t_start')),(c.get_attr('x'),c.get_attr('t_start'))) for c in n.children]
+                    ax2.scatter(
+                        hist_scatter['x'],
+                        #hist_scatter['y'],
+                        #[self.t]*len(hist_scatter['y']),
+                        hist_scatter['t_start'],
+                        c = [l.color for l in self.languages if l is not None]
+                                )
+                    
+                    connectors = []
+                    for n in preorder_iter(hist_scatter['tree']):
+                        if n.name != 'INITIAL':
+                            connectors = connectors + [((n.get_attr('x'),n.get_attr('t_start')),(c.get_attr('x'),c.get_attr('t_start'))) for c in n.children]
 
-                #print(connectors)
-                #print(np.array(connectors))
-                
-                if len(connectors) > 0:
-                    for x,y in zip(np.array(connectors)[:,:,0].astype(float),np.array(connectors)[:,:,1].astype(float)):
-                        ax2.plot(x,y,markerfacecolor = "black")
-                
-                for i, txt in enumerate(hist_scatter['labels']):
-                    ax2.annotate(txt, (hist_scatter['x'][i], hist_scatter['t_start'][i]))
-                
-                ax2.invert_yaxis()
-                ax2.axes.get_xaxis().set_visible(False)
+                    #print(connectors)
+                    #print(np.array(connectors))
+                    
+                    if len(connectors) > 0:
+                        for x,y in zip(np.array(connectors)[:,:,0].astype(float),np.array(connectors)[:,:,1].astype(float)):
+                            ax2.plot(x,y,markerfacecolor = "black")
+                    
+                    for i, txt in enumerate(hist_scatter['labels']):
+                        ax2.annotate(txt, (hist_scatter['x'][i], hist_scatter['t_start'][i]))
+                    
+                    ax2.invert_yaxis()
+                    ax2.axes.get_xaxis().set_visible(False)
 
                 plt.subplots_adjust(wspace = 0.4, hspace=0.4)
 

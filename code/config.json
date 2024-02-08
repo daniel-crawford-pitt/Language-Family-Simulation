@@ -5,6 +5,10 @@
     "NUM_INIT_LANGS":  3,
     "FIELD_SIZE_TUPLE": [100,100],
     "MOMENTUM_FUNC_CLASS": "CONSTANT",
-    "MOMENTUM_FUNC_STATIC_BOOL": "false"
+    "MOMENTUM_FUNC_STATIC_BOOL": "yes",
+
+    "SHOW_CONCAVE_HULL": "true",
+    "SHOW_TREE_DIAGRAM": ""
+
 
 }

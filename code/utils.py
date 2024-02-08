@@ -15,6 +15,9 @@ def read_config():
     os.environ["MOMENTUM_FUNC_CLASS"] = str(config["MOMENTUM_FUNC_CLASS"])
     os.environ["MOMENTUM_FUNC_STATIC_BOOL"] = str(config["MOMENTUM_FUNC_STATIC_BOOL"])
 
+    os.environ["SHOW_CONCAVE_HULL"] = str(config["SHOW_CONCAVE_HULL"])
+    os.environ["SHOW_TREE_DIAGRAM"] = str(config["SHOW_TREE_DIAGRAM"])
+
     print('Config Read!')
  
 if __name__ == "__main__":
