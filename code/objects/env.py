@@ -172,7 +172,7 @@ class Env:
 
     
         ani = animation.FuncAnimation(fig, update_sim,
-            blit=False, interval=10, frames = 100, 
+            blit=False, interval=100, frames = 100, 
             cache_frame_data=False,
             repeat=True)
 
@@ -248,11 +248,14 @@ class Env:
                             #print(l.momentum)
                             #print(self.languages[i].momentum)
 
-                            other_ling_areas = \
-                                other_ling_areas |\
-                                np.array(Delaunay(self.hull_points[j]).find_simplex(
-                                    [(ii,ji) for ii in np.arange(0,100,1) for ji in np.arange(0,100,1)]
-                                )>=0).reshape(100,100).T
+                            try:
+                                other_ling_areas = \
+                                    other_ling_areas |\
+                                    np.array(Delaunay(self.hull_points[j]).find_simplex(
+                                        [(ii,ji) for ii in np.arange(0,100,1) for ji in np.arange(0,100,1)]
+                                    )>=0).reshape(100,100).T
+                            except:
+                                pass
                     
                 
                 l.step(other_ling_areas)
@@ -283,7 +286,7 @@ class Env:
     def do_splits(self):
         for i,l in enumerate(self.languages):
             if l is not None and None in self.languages:
-                 if np.random.rand() < 0.01:
+                 if np.random.rand() < l.split_threshold:
 
                     # Assuming you have a numpy array of points in the form [(x1, y1), (x2, y2), ...]
                     (As, Bs) = np.where(l.map > 0.001)

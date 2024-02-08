@@ -18,6 +18,11 @@ def read_config():
     os.environ["SHOW_CONCAVE_HULL"] = str(config["SHOW_CONCAVE_HULL"])
     os.environ["SHOW_TREE_DIAGRAM"] = str(config["SHOW_TREE_DIAGRAM"])
 
+    os.environ["SPLIT_THRESHOLD_FUNC_CLASS"] = str(config["SPLIT_THRESHOLD_FUNC_CLASS"])
+    os.environ["SPLIT_THRESHOLD_CONST_VALUE"] = str(config["SPLIT_THRESHOLD_CONST_VALUE"])
+
+
+
     print('Config Read!')
  
 if __name__ == "__main__":

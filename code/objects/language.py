@@ -56,6 +56,14 @@ class Language:
                 self.m = np.random.random() #select randomly
                 self.momentum = self.m
             
+        #Initialize Split Threshold
+        match os.environ.get('SPLIT_THRESHOLD_FUNC_CLASS'): #function class is set in config, different values depending on func class
+            case 'SIZE_INVERSE': #sine function
+                self.split_threshold = np.sum(self.map)/10000.0
+            case 'CONSTANT': #constant
+                self.split_threshold = float(os.environ.get('SPLIT_THRESHOLD_CONST_VALUE'))
+            
+                
         
     
     def update_momentum(self, t): 
