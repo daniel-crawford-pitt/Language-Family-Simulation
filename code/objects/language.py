@@ -51,7 +51,7 @@ class Language:
             case 'SIN': #sine function
                 self.A = 20*np.random.random()-10 #amplitude
                 self.p = 20*np.random.random()-10 #period
-                self.momentum = self.A * np.sin(self.p*t) #calculate - need t 
+                self.momentum = self.A * np.sin(self.p*self.start_time) #calculate - need t 
             case 'CONSTANT': #constant
                 self.m = np.random.random() #select randomly
                 self.momentum = self.m
@@ -59,7 +59,8 @@ class Language:
         #Initialize Split Threshold
         match os.environ.get('SPLIT_THRESHOLD_FUNC_CLASS'): #function class is set in config, different values depending on func class
             case 'SIZE_INVERSE': #sine function
-                self.split_threshold = np.sum(self.map)/10000.0
+                #self.split_threshold = np.sum(self.map)/10000.0*0.01
+                self.split_threshold = (np.exp(np.log(2)/10000.0*np.sum(self.map))-1)*0.1
             case 'CONSTANT': #constant
                 self.split_threshold = float(os.environ.get('SPLIT_THRESHOLD_CONST_VALUE'))
             
@@ -77,7 +78,15 @@ class Language:
                 self.momentum = self.A * np.sin(self.p*t)
             case 'CONSTANT':
                 self.momentum = self.m
-        
+
+    def update_split_threshold(self): 
+        match os.environ.get('SPLIT_THRESHOLD_FUNC_CLASS'): #function class is set in config, different values depending on func class
+            case 'SIZE_INVERSE': #sine function
+                #self.split_threshold = np.sum(self.map)/10000.0*0.01
+                self.split_threshold = (np.exp(np.log(2)/10000.0*np.sum(self.map))-1)*0.1
+            case 'CONSTANT': #constant
+                self.split_threshold = float(os.environ.get('SPLIT_THRESHOLD_CONST_VALUE'))
+            
 
 
     def step(self, other_ling_area):

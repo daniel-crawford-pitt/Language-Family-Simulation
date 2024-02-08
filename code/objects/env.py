@@ -72,6 +72,11 @@ class Env:
                     print(self.t)
                     for l in self.languages:
                         if l is not None: print(l.history)
+                    for l in self.languages:
+                        if l is not None: print(l.split_threshold)
+                    
+
+
 
                 ax1 = plt.subplot2grid((1, 2), (0, 0), colspan=1, rowspan = 1)             
                 
@@ -197,6 +202,12 @@ class Env:
         for l in self.languages:
             if l is not None:
                 l.update_momentum(self.t)
+
+    def do_update_momentums(self):
+        for l in self.languages:
+            if l is not None:
+                l.update_split_threshold()
+
 
     def do_start(self):
         temp_map = np.zeros(FIELD_SIZE_TUPLE)
