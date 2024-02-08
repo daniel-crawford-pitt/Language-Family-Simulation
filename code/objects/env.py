@@ -35,9 +35,6 @@ class Env:
 
         #self.competition_matrix = np.zeros((10,10))+0.5
 
-        
-
-
 
     def sim(self):
 
@@ -78,17 +75,18 @@ class Env:
                     if l is not None: 
                         
                         p[i,:,:] = l.map
-                        cmap = colors.ListedColormap(['white', self.color_list[i]])
+                        #cmap = colors.ListedColormap(['white', self.color_list[i]])
                         bounds=[0,0.01,1]
-                        norm = colors.BoundaryNorm(bounds, cmap.N)
-                        ax1.imshow(p[i,:,:], alpha=0.75, interpolation='nearest', origin='lower', cmap=cmap, norm=norm)
+                        #norm = colors.BoundaryNorm(bounds, cmap.N)
+                        ax1.imshow(p[i,:,:], interpolation='nearest', cmap=colors.ListedColormap([(0,0,0,0),l.color]), alpha = 0.9)
+                        #ax1.imshow(p[i,:,:], alpha=0.75, interpolation='nearest', origin='lower', cmap=cmap, norm=norm)
                         ax1.set_xticks(np.arange(0, 100, 10))
                         ax1.set_yticks(np.arange(0, 100, 10))
 
 
                 if True:
                     if len([l for l in self.languages if l is not None]) > 0:
-                        for i in range(MAX_NUMBER_LANGUAGES):  # Assuming you have three color groups
+                        for i in range(MAX_NUMBER_LANGUAGES):  
                                 indices = np.where((p[i,:, :] > 0)&(p[i, :, :] <= 1))  # Change the condition based on your data
                                 x = indices[1]
                                 y = indices[0]  # Invert y-axis if needed
@@ -98,7 +96,7 @@ class Env:
                                     hull_points = np.array([points[i] for i in idxes])
                                     hull_points = np.append(hull_points,hull_points[0]).reshape(-1,2)
                                     
-                                    c = self.color_list[i]
+                                    c = self.languages[i].color
                                     ax1.plot(hull_points[:,0], hull_points[:,1], color = c)
                                     #plt.scatter(hull_points[:,0], hull_points[:,1], marker = 'o',  edgecolors='r', color='none', lw=0.5)
 
@@ -116,12 +114,23 @@ class Env:
                     """
                 
                 ax2 = plt.subplot2grid((1, 2), (0, 1), colspan=1, rowspan = 1) 
-                hist_scatter = history_figure([l.history for l in self.languages if l is not None], test_mode = False)
-
-                ax2.scatter(hist_scatter['x'],hist_scatter['y'])
-                for i, txt in enumerate(hist_scatter['labels']):
-                    ax2.annotate(txt, (hist_scatter['x'][i], hist_scatter['y'][i]))
                 
+                #We are getting the first entry in array being INITIAL - will need to work on this
+                
+                hist_scatter = history_figure([l.history for l in self.languages if l is not None], test_mode = False)
+               
+                ax2.scatter(
+                    hist_scatter['x'],
+                    #hist_scatter['y'],
+                    #[self.t]*len(hist_scatter['y']),
+                    hist_scatter['t_start'],
+                    c = [l.color for l in self.languages if l is not None]
+                            )
+                
+                for i, txt in enumerate(hist_scatter['labels']):
+                    ax2.annotate(txt, (hist_scatter['x'][i], hist_scatter['t_start'][i]))
+                
+                ax2.invert_yaxis()
                 ax2.set_axis_off()
                 plt.subplots_adjust(wspace = 0.4, hspace=0.4)
 

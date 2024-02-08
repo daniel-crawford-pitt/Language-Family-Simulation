@@ -27,15 +27,17 @@ def history_figure(lhs, test_mode = False):
                     hold = hold+L[2]+'/'
                 else:
                     coord_dict[hold+L[2]+'/'] = (L[1],0)
-        
-        cdk_list = [str(cdk[:-1]) for cdk in coord_dict.keys()]
-        root = list_to_tree(cdk_list)
+            
+        cdk_dict = {str(cdk[:-1]):{'t_start':coord_dict[cdk][0]} for cdk in coord_dict.keys()}
+        root = dict_to_tree(cdk_dict)
         reingold_tilford(root)
         #root.show(attr_list=["x", "y"])
+        #root.show(attr_list=["t_start"])
 
-        n = [node.name for node in preorder_iter(root)]
-        x = [node.get_attr('x') for node in preorder_iter(root)]
-        y = [node.get_attr('y') for node in preorder_iter(root)]
+        n = [node.name for node in preorder_iter(root)][1:]
+        x = [node.get_attr('x') for node in preorder_iter(root)][1:]
+        y = [node.get_attr('y') for node in preorder_iter(root)][1:]
+        t = [node.get_attr('t_start') for node in preorder_iter(root)][1:]
         
         
 
@@ -43,7 +45,7 @@ def history_figure(lhs, test_mode = False):
 
     
 
-    return {'x':x,'y':y,'labels':n}
+    return {'x':x,'y':y,'labels':n,'t_start':t}
 
 if __name__ == '__main__':
 
