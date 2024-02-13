@@ -1,17 +1,19 @@
 {
-    
-    
+       
     "MAX_NUMBER_LANGUAGES": 25,
-    "NUM_INIT_LANGS":  3,
+    "MAX_TIME_STEPS": 1000,
+    "NUM_INIT_LANGS":  1,
     "FIELD_SIZE_TUPLE": [100,100],
     "MOMENTUM_FUNC_CLASS": "CONSTANT",
     "MOMENTUM_FUNC_STATIC_BOOL": "",
 
-    "SHOW_CONCAVE_HULL": "true",
-    "SHOW_TREE_DIAGRAM": "",
+    "SHOW_CONCAVE_HULL": "t",
+    "SHOW_TREE_DIAGRAM": "t",
+    "SHOW_MAP":"t",
+    "SHOW_NOTHING":"t",
 
     "SPLIT_THRESHOLD_FUNC_CLASS": "SIZE_INVERSE",
     "SPLIT_THRESHOLD_CONST_VALUE":"0.1"
 
-
+    
 }

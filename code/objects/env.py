@@ -22,8 +22,11 @@ NUM_INIT_LANGS = int(os.environ.get("NUM_INIT_LANGS"))
 
 SHOW_CONCAVE_HULL = bool(os.environ.get("SHOW_CONCAVE_HULL"))
 SHOW_TREE_DIAGRAM = bool(os.environ.get("SHOW_TREE_DIAGRAM"))
+SHOW_MAP = bool(os.environ.get("SHOW_MAP"))
+SHOW_NOTHING = bool(os.environ.get("SHOW_NOTHING"))
 
-print(SHOW_TREE_DIAGRAM)
+MAX_TIME_STEPS = int(os.environ.get("MAX_TIME_STEPS"))
+
 
 FIELD_SIZE_TUPLE = (100,100)#tuple(os.environ["FIELD_SIZE_TUPLE"])
 
@@ -45,144 +48,144 @@ class Env:
 
     def sim(self):
 
-        def sim_map(existance_map):
+        if not SHOW_NOTHING:
 
-            existance_map_next = copy.deepcopy(existance_map)
+            def sim_map(existance_map):
 
-            for i in range(1,existance_map.shape[0]):
-                for j in range(1,existance_map.shape[1]):
-                    existance_map_next[i][j] = next_exist_fxn(
-                        existance_map[i][j],existance_map[i-1:i+2, j-1:j+2]
-                        )
+                existance_map_next = copy.deepcopy(existance_map)
 
-            return existance_map_next
-
-        def onClick(event):
-            global pause
-            pause ^= True
-
-        def update_sim(frame):
-
-            if not pause:
-                # Clear previous plot contents
-                fig.clear()
-
-                self.step()
-                if self.t%100 == 0:
-                    print(self.t)
-                    for l in self.languages:
-                        if l is not None: print(l.history)
-                    for l in self.languages:
-                        if l is not None: print(l.split_threshold)
-                    
-
-
-
-                ax1 = plt.subplot2grid((1, 2), (0, 0), colspan=1, rowspan = 1)             
-                
-                p = np.zeros((MAX_NUMBER_LANGUAGES, 100,100)) #10 colors
-
-                self.curr_map = p
-                for i,l in enumerate(self.languages):
-                    if l is not None: 
-                        
-                        p[i,:,:] = l.map
-                        #cmap = colors.ListedColormap(['white', self.color_list[i]])
-                        bounds=[0,0.01,1]
-                        #norm = colors.BoundaryNorm(bounds, cmap.N)
-                        ax1.imshow(p[i,:,:], interpolation='nearest', cmap=colors.ListedColormap([(0,0,0,0),l.color]), alpha = 0.9)
-                        #ax1.imshow(p[i,:,:], alpha=0.75, interpolation='nearest', origin='lower', cmap=cmap, norm=norm)
-                        ax1.set_xticks(np.arange(0, 100, 10))
-                        ax1.set_yticks(np.arange(0, 100, 10))
-
-
-                if SHOW_CONCAVE_HULL:
-                    if len([l for l in self.languages if l is not None]) > 0:
-                        for i in range(MAX_NUMBER_LANGUAGES):  
-                                indices = np.where((p[i,:, :] > 0)&(p[i, :, :] <= 1))  # Change the condition based on your data
-                                x = indices[1]
-                                y = indices[0]  # Invert y-axis if needed
-                                if len(x) > 5:
-                                    points = list(zip(x,y))
-                                    idxes = concave_hull_indexes(points)
-                                    hull_points = np.array([points[i] for i in idxes])
-                                    hull_points = np.append(hull_points,hull_points[0]).reshape(-1,2)
-                                    
-                                    c = self.languages[i].color
-                                    ax1.plot(hull_points[:,0], hull_points[:,1], color = c)
-                                    #plt.scatter(hull_points[:,0], hull_points[:,1], marker = 'o',  edgecolors='r', color='none', lw=0.5)
-
-                    """
-                    for i, ax in enumerate([ax2,ax3,ax4]):
-                        c = p[np.where((p[:, :, i] > 0)&(p[:, :, i] <= 1))][:,i]
-                        ax.hist(c, 
-                                bins = np.arange(0.05,1.06,0.1),
-                                weights=np.ones(len(c)) / len(c),
-                                color = ['r','g','b'][i]
+                for i in range(1,existance_map.shape[0]):
+                    for j in range(1,existance_map.shape[1]):
+                        existance_map_next[i][j] = next_exist_fxn(
+                            existance_map[i][j],existance_map[i-1:i+2, j-1:j+2]
                             )
-                        ax.set_xlim(0,1.1)
-                       
-                         ax.set_ylim(0,1.1)
-                    """
-                if SHOW_TREE_DIAGRAM:
-                    ax2 = plt.subplot2grid((1, 2), (0, 1), colspan=1, rowspan = 1) 
-                    
-                    #We are getting the first entry in array being INITIAL - will need to work on this
-                    
-                    hist_scatter = history_figure([l.history for l in self.languages if l is not None], test_mode = False)
-                
-                    ax2.scatter(
-                        hist_scatter['x'],
-                        #hist_scatter['y'],
-                        #[self.t]*len(hist_scatter['y']),
-                        hist_scatter['t_start'],
-                        c = [l.color for l in self.languages if l is not None]
-                                )
-                    
-                    connectors = []
-                    for n in preorder_iter(hist_scatter['tree']):
-                        if n.name != 'INITIAL':
-                            connectors = connectors + [((n.get_attr('x'),n.get_attr('t_start')),(c.get_attr('x'),c.get_attr('t_start'))) for c in n.children]
 
-                    #print(connectors)
-                    #print(np.array(connectors))
+                return existance_map_next
+
+            def onClick(event):
+                global pause
+                pause ^= True
+
+            def update_sim(frame):
+
+                if not pause:
                     
-                    if len(connectors) > 0:
-                        for x,y in zip(np.array(connectors)[:,:,0].astype(float),np.array(connectors)[:,:,1].astype(float)):
-                            ax2.plot(x,y,markerfacecolor = "black")
+                    #if self.t == 100:
+                    #    plt.close()
+
+                    # Clear previous plot contents
+                    fig.clear()
+
+                    self.step()
+                    if self.t%100 == 0:
+                        print(self.t)
+                        for l in self.languages:
+                            if l is not None: print(l.history)
+                        for l in self.languages:
+                            pass
+                            #if l is not None: print(l.split_threshold)
+
+                    if SHOW_MAP:
+                        ax1 = plt.subplot2grid((1, 2), (0, 0), colspan=1, rowspan = 1)             
+                        
+                        p = np.zeros((MAX_NUMBER_LANGUAGES, 100,100)) #10 colors
+
+                        self.curr_map = p
+                        for i,l in enumerate(self.languages):
+                            if l is not None: 
+                                
+                                p[i,:,:] = l.map
+                                #cmap = colors.ListedColormap(['white', self.color_list[i]])
+                                bounds=[0,0.01,1]
+                                #norm = colors.BoundaryNorm(bounds, cmap.N)
+                                ax1.imshow(p[i,:,:], interpolation='nearest', cmap=colors.ListedColormap([(0,0,0,0),l.color]), alpha = 0.9)
+                                #ax1.imshow(p[i,:,:], alpha=0.75, interpolation='nearest', origin='lower', cmap=cmap, norm=norm)
+                                ax1.set_xticks(np.arange(0, 100, 10))
+                                ax1.set_yticks(np.arange(0, 100, 10))
+
+
+                    if SHOW_CONCAVE_HULL:
+                        if len([l for l in self.languages if l is not None]) > 0:
+                            for i in range(MAX_NUMBER_LANGUAGES):  
+                                    indices = np.where((p[i,:, :] > 0)&(p[i, :, :] <= 1))  # Change the condition based on your data
+                                    x = indices[1]
+                                    y = indices[0]  # Invert y-axis if needed
+                                    if len(x) > 5:
+                                        points = list(zip(x,y))
+                                        idxes = concave_hull_indexes(points)
+                                        hull_points = np.array([points[i] for i in idxes])
+                                        hull_points = np.append(hull_points,hull_points[0]).reshape(-1,2)
+                                        
+                                        c = self.languages[i].color
+                                        ax1.plot(hull_points[:,0], hull_points[:,1], color = c)
+                                        #plt.scatter(hull_points[:,0], hull_points[:,1], marker = 'o',  edgecolors='r', color='none', lw=0.5)
+
                     
-                    for i, txt in enumerate(hist_scatter['labels']):
-                        ax2.annotate(txt, (hist_scatter['x'][i], hist_scatter['t_start'][i]))
+                    if SHOW_TREE_DIAGRAM:
+                        ax2 = plt.subplot2grid((1, 2), (0, 1), colspan=1, rowspan = 1) 
+                        
+                        #We are getting the first entry in array being INITIAL - will need to work on this
+                        
+                        hist_scatter = history_figure([l.history for l in self.languages if l is not None], test_mode = False)
                     
-                    ax2.invert_yaxis()
-                    ax2.axes.get_xaxis().set_visible(False)
+                        ax2.scatter(
+                            hist_scatter['x'],
+                            #hist_scatter['y'],
+                            #[self.t]*len(hist_scatter['y']),
+                            hist_scatter['t_start'],
+                            c = [l.color for l in self.languages if l is not None]
+                                    )
+                        
+                        connectors = []
+                        for n in preorder_iter(hist_scatter['tree']):
+                            if n.name != 'INITIAL':
+                                connectors = connectors + [((n.get_attr('x'),n.get_attr('t_start')),(c.get_attr('x'),c.get_attr('t_start'))) for c in n.children]
 
-                plt.subplots_adjust(wspace = 0.4, hspace=0.4)
+                        #print(connectors)
+                        #print(np.array(connectors))
+                        
+                        if len(connectors) > 0:
+                            for x,y in zip(np.array(connectors)[:,:,0].astype(float),np.array(connectors)[:,:,1].astype(float)):
+                                ax2.plot(x,y,markerfacecolor = "black")
+                        
+                        for i, txt in enumerate(hist_scatter['labels']):
+                            ax2.annotate(txt, (hist_scatter['x'][i], hist_scatter['t_start'][i]))
+                        
+                        ax2.invert_yaxis()
+                        ax2.axes.get_xaxis().set_visible(False)
+
+                    plt.subplots_adjust(wspace = 0.4, hspace=0.4)
 
 
+                    
 
+            
+
+                return fig
+
+            
+
+            fig, ax = plt.subplots()
+            #time_template = 'Time = %.1f s'
+            #time_text = ax.text(0.05, 0.9, f'{self.t}', transform=ax.transAxes)
+
+
+            #fig.canvas.mpl_connect('button_press_event', onClick)
 
         
+            ani = animation.FuncAnimation(fig, update_sim,
+                interval=1, frames = 100, repeat=False)
+            
+            
+            
+            return ani
 
-            return fig
+        else:
+            for i in range(MAX_TIME_STEPS):
+                self.step()
 
-        
-
-        fig, ax = plt.subplots()
-        #time_template = 'Time = %.1f s'
-        #time_text = ax.text(0.05, 0.9, f'{self.t}', transform=ax.transAxes)
-
-
-        #fig.canvas.mpl_connect('button_press_event', onClick)
-
-    
-        ani = animation.FuncAnimation(fig, update_sim,
-            blit=False, interval=100, frames = 100, 
-            cache_frame_data=False,
-            repeat=True)
-
-        return ani
-
+                if i % 100 == 0:
+                    print(i)
 
     def step(self):
         if self.t == 0:
@@ -212,7 +215,7 @@ class Env:
     def do_start(self):
         temp_map = np.zeros(FIELD_SIZE_TUPLE)
         points = np.argwhere(temp_map == 0)
-        kmeans = MiniBatchKMeans(n_clusters=NUM_INIT_LANGS, init='random').fit(points)
+        kmeans = MiniBatchKMeans(n_clusters=NUM_INIT_LANGS, init='random', n_init=NUM_INIT_LANGS).fit(points)
         preds = kmeans.predict(points)      
         
         for i in np.unique(preds):
@@ -291,6 +294,7 @@ class Env:
                 #l.death()
                 if (l.map == 0).all(): 
                     self.languages[i] = None
+                    #
                     print('DEATH HAPPENS')
 
 
@@ -304,7 +308,7 @@ class Env:
                     points = [[a,b] for a, b in zip(As, Bs)]     
                     if len(points) > 30:
 
-                        kmeans = MiniBatchKMeans(n_clusters=2, init='random').fit(points)
+                        kmeans = MiniBatchKMeans(n_clusters=2, init='random', n_init=2).fit(points)
                         preds = kmeans.predict(points)
 
                         #print(points)
@@ -331,7 +335,7 @@ class Env:
                             None, random_color_near(l.color), self.t, deepcopy(_), prev_history=l.history
                         )
 
-                        print("SPLIT HAPPENS")
+                        #print("SPLIT HAPPENS")
                         
 
 

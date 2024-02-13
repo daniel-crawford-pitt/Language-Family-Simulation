@@ -17,6 +17,9 @@ def read_config():
 
     os.environ["SHOW_CONCAVE_HULL"] = str(config["SHOW_CONCAVE_HULL"])
     os.environ["SHOW_TREE_DIAGRAM"] = str(config["SHOW_TREE_DIAGRAM"])
+    os.environ["SHOW_MAP"] = str(config["SHOW_MAP"])
+    os.environ["SHOW_NOTHING"] = str(config["SHOW_NOTHING"])
+    os.environ["MAX_TIME_STEPS"] = str(config["MAX_TIME_STEPS"])
 
     os.environ["SPLIT_THRESHOLD_FUNC_CLASS"] = str(config["SPLIT_THRESHOLD_FUNC_CLASS"])
     os.environ["SPLIT_THRESHOLD_CONST_VALUE"] = str(config["SPLIT_THRESHOLD_CONST_VALUE"])

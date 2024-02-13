@@ -16,11 +16,9 @@ os.environ['LANG_ID_CTR'] = "1"
 env = Env()
 
 sim_anim = env.sim()
-plt.show()
-#f = r"C:/Users/dcraw/OneDrive/Desktop/Language Family Simulation/anims" 
-#writergif = animation.PillowWriter(fps=30) 
-#sim_anim.save(f, writer=writergif)
 
+plt.show()
+print('Done')
 
 
 
