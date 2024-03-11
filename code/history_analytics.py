@@ -30,14 +30,35 @@ def history_analysis(lhs, test_mode = False):
         
         cdk_dict = {th:{'t_start':time} for th,time in zip(tree_hists,ts)}
 
-        #print(cdk_dict)
+        print(cdk_dict)
         root = dict_to_tree(cdk_dict)
         #reingold_tilford(root)
         #root.show(attr_list=["x", "y","t_start"])
         root.show(attr_list=["t_start"])
         #hprint_tree(root)
 
-        
+        adjust_horizon(cdk_dict, 40)
+
+def adjust_horizon(cdk_dict, adjust_time):
+    for v in cdk_dict.values():
+        v['t_start'] = str(int(v['t_start']) - adjust_time)
+
+    #print(cdk_dict)
+    #root.show(attr_list=["t_start"])
+    
+    new_dict = {}
+    for k,v in cdk_dict.items():
+        if int(v['t_start']) > 0:
+            new_dict[k] = v
+        else:
+            new_dict['INITIAL/'+k.split('/')[-2]] = v
+
+    return new_dict
+
+   
+
+
+    
 
 
 if __name__ == "__main__":
