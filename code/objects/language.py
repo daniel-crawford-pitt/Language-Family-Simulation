@@ -10,7 +10,10 @@ class Language:
     """ 
     Language object - carries information about the language 
     """
-    def __init__(self, starting_point, color, start_time, start_map = None, prev_history = ""):
+    def __init__(self, starting_point, color, start_time, start_map = None,
+                 SPLIT_THRESHOLD_FUNC_CLASS = None, MOMENTUM_FUNC_CLASS = None,
+                 SPLIT_THRESHOLD_CONST_VALUE = None,  MOMENTUM_FUNC_STATIC_BOOL = None,
+                prev_history = ""):
         """ 
         starting_point: tuple(int, int) - the point that the language originated - NOT CURRENTLY USED
         color: string - the color that the language should appear in the animation
@@ -28,7 +31,14 @@ class Language:
         self.starting_point = starting_point #think about this
         self.color = color
         self.start_time = start_time
+
+        self.SPLIT_THRESHOLD_FUNC_CLASS = SPLIT_THRESHOLD_FUNC_CLASS
+        self.MOMENTUM_FUNC_CLASS = MOMENTUM_FUNC_CLASS
+        self.SPLIT_THRESHOLD_CONST_VALUE = SPLIT_THRESHOLD_CONST_VALUE
+        self.MOMENTUM_FUNC_STATIC_BOOL = MOMENTUM_FUNC_STATIC_BOOL
         
+
+        self.alive = True
 
         if start_map is None:
             self.map = np.zeros([100,100]) #Need to generalize with config
@@ -36,18 +46,15 @@ class Language:
         else:
             self.map = start_map
 
-        #self.directionalization = np.random.random(4)
-        
-
         #concatenation of history string, see parse_history.py for more info
-        self.history = prev_history + "START_" + str(start_time) + '_L' + str(os.environ.get('LANG_ID_CTR')).zfill(3) + '_'
+        self.history = prev_history + "START_" + str(start_time) + '_L' + str(os.environ.get('LANG_ID_CTR')).zfill(3) + '+'
         
         #increment the environmental variable for language counters by 1
         os.environ['LANG_ID_CTR'] = str(int(os.environ.get('LANG_ID_CTR'))+1)
         
 
         #Initialize a momentum value
-        match os.environ.get('MOMENTUM_FUNC_CLASS'): #function class is set in config, different values depending on func class
+        match MOMENTUM_FUNC_CLASS: #function class is set in config, different values depending on func class
             case 'SIN': #sine function
                 self.A = 20*np.random.random()-10 #amplitude
                 self.p = 20*np.random.random()-10 #period
@@ -57,14 +64,17 @@ class Language:
                 self.momentum = self.m
             
         #Initialize Split Threshold
-        match os.environ.get('SPLIT_THRESHOLD_FUNC_CLASS'): #function class is set in config, different values depending on func class
+        match SPLIT_THRESHOLD_FUNC_CLASS: #function class is set in config, different values depending on func class
             case 'SIZE_INVERSE': #sine function
                 #self.split_threshold = np.sum(self.map)/10000.0*0.01
                 self.split_threshold = (np.exp(np.log(2)/10000.0*np.sum(self.map))-1)*0.1
             case 'CONSTANT': #constant
-                self.split_threshold = float(os.environ.get('SPLIT_THRESHOLD_CONST_VALUE'))
+                self.split_threshold = self.SPLIT_THRESHOLD_CONST_VALUE
             
-                
+    def append_split_history(self, start_time):
+        #History tag added to language when another splits form it
+        self.history = self.history + "START_" + str(start_time) + '_L' + str(os.environ.get('LANG_ID_CTR')).zfill(3) + '+'
+        os.environ['LANG_ID_CTR'] = str(int(os.environ.get('LANG_ID_CTR'))+1)
         
     
     def update_momentum(self, t): 
@@ -73,19 +83,19 @@ class Language:
         
         t: int - timestep
         """
-        match os.environ.get('MOMENTUM_FUNC_CLASS'): #determine momentum function class from environment
+        match self.MOMENTUM_FUNC_CLASS: #determine momentum function class from environment
             case 'SIN':
                 self.momentum = self.A * np.sin(self.p*t)
             case 'CONSTANT':
                 self.momentum = self.m
 
     def update_split_threshold(self): 
-        match os.environ.get('SPLIT_THRESHOLD_FUNC_CLASS'): #function class is set in config, different values depending on func class
+        match self.SPLIT_THRESHOLD_FUNC_CLASS: #function class is set in config, different values depending on func class
             case 'SIZE_INVERSE': #sine function
                 #self.split_threshold = np.sum(self.map)/10000.0*0.01
                 self.split_threshold = (np.exp(np.log(2)/10000.0*np.sum(self.map))-1)*0.1
             case 'CONSTANT': #constant
-                self.split_threshold = float(os.environ.get('SPLIT_THRESHOLD_CONST_VALUE'))
+                self.split_threshold = self.SPLIT_THRESHOLD_CONST_VALUE
             
 
 
