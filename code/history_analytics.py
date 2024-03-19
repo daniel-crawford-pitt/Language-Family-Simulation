@@ -16,12 +16,16 @@ def history_analysis(lhs, test_mode = False):
 
     history_dict = parse_histories(lhs)
     true_tree = dict_to_tree(history_dict)
-    #hprint_tree(true_tree)
-    adjusted_history_dict = adjust_horizon(history_dict, 40)
-    adjusted_tree = dict_to_tree(adjusted_history_dict)    
-    #hprint_tree(adjusted_tree)
-    
+
+    print("TRUE TREE")
+    hprint_tree(true_tree)
     print(history_metrics(true_tree))
+    
+
+    adjusted_history_dict = adjust_horizon(history_dict, 50)
+    adjusted_tree = dict_to_tree(adjusted_history_dict)    
+    print("\nADJUSTED TREE")
+    hprint_tree(adjusted_tree)
     print(history_metrics(adjusted_tree))
 
 
@@ -57,7 +61,7 @@ def history_metrics(tree):
     num_lfs = len(tree.children)
     lf_sizes = [len([d for d in lf.descendants])+1 for lf in tree.children]
 
-    return num_lfs, lf_sizes
+    return num_lfs, lf_sizes, sum(lf_sizes)
 
 
 
