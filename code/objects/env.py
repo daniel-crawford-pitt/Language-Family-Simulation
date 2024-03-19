@@ -197,7 +197,7 @@ class Env:
                 self.step()
 
                 if i%self.PRINT_t_EVERY == 0:
-                    print(f"Time: {self.t-1}")
+                    #print(f"Time: {self.t-1}")
                     for l in self.languages:
                         pass
                         #if l is not None: print(l.history)
@@ -320,7 +320,7 @@ class Env:
                     
                     self.languages[i].alive = False
                     self.languages[i].history = self.languages[i].history + f"DEATH_{self.t}+"
-                    print('DEATH HAPPENS')
+                    #print('DEATH HAPPENS')
 
 
     def do_splits(self):

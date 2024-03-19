@@ -2,7 +2,6 @@ import numpy as np
 import random as r
 import os
 from scipy.ndimage import binary_dilation
-
 from simulation.sim_main import *
 
 
@@ -98,7 +97,7 @@ class Language:
                 self.split_threshold = self.SPLIT_THRESHOLD_CONST_VALUE
             
 
-
+    
     def step(self, other_ling_area):
         """ The function that has a language take a step (spread) around the map
         

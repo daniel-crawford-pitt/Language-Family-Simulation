@@ -4,21 +4,22 @@ from bigtree import dict_to_tree,list_to_tree, tree_to_dot,preorder_iter, hprint
 from bigtree.utils.plot import reingold_tilford
 #root.show(attr_list=["x", "y","t_start"])
 import matplotlib as pyplot
-
+import csv
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-def history_analysis(lhs, test_mode = False):
-    print('Histories: ===================================')
-    for lh in lhs: print(lh)
-    print('----------------------------------------------')
+def history_analysis(lhs, output_file, test_mode = False):
+    #print('Histories: ===================================')
+    #for lh in lhs: print(lh)
+    #print('----------------------------------------------')
     
 
     all_lang_histories, alive_language_histories = sep_alive_langs(lhs)
 
 
-    print(all_lang_histories,"\n ======== \n",alive_language_histories)
+    #print(all_lang_histories,"\n ======== \n",alive_language_histories)
 
     
     all_history_dict = parse_histories(all_lang_histories)
@@ -26,16 +27,27 @@ def history_analysis(lhs, test_mode = False):
     
     true_tree = dict_to_tree(all_history_dict)
 
-    print("TRUE TREE")
-    hprint_tree(true_tree)
-    print(history_metrics(true_tree))
+    #print("TRUE TREE")
+    #hprint_tree(true_tree)
+    #print(history_metrics(true_tree))
     
 
     adjusted_history_dict = adjust_horizon(alive_history_dict, 50)
     adjusted_tree = dict_to_tree(adjusted_history_dict)    
-    print("\nADJUSTED TREE")
-    hprint_tree(adjusted_tree)
-    print(history_metrics(adjusted_tree))
+    #print("\nADJUSTED TREE")
+    #hprint_tree(adjusted_tree)
+    #print(history_metrics(adjusted_tree))
+
+    #Write to outputfile
+    output_row = []
+    for h in np.arange(0,91,10):
+        adjusted_history_dict = adjust_horizon(alive_history_dict, h)
+        adjusted_tree = dict_to_tree(adjusted_history_dict)  
+        output_row.append(history_metrics(adjusted_tree)[2])
+
+    with open(os.path.abspath(output_file), 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow(output_row)
 
 def sep_alive_langs(lhs):
     all = []
