@@ -319,7 +319,7 @@ class Env:
                 if (l.map == 0).all(): 
                     
                     self.languages[i].alive = False
-                    #self.languages[i].history = self.languages[i].history + f"DEATH_{self.t}+"
+                    self.languages[i].history = self.languages[i].history + f"DEATH_{self.t}+"
                     print('DEATH HAPPENS')
 
 
