@@ -1,0 +1,21 @@
+{
+       
+    "MAX_NUMBER_LANGUAGES": 100,
+    "MAX_TIME_STEPS": 100,
+    "NUM_INIT_LANGS":  15,
+    "FIELD_SIZE_1DIM": 100,
+    "PRINT_t_EVERY" : 50,
+
+    "MOMENTUM_FUNC_CLASS": "CONSTANT",
+    "MOMENTUM_FUNC_STATIC_BOOL": "",
+
+    "SHOW_CONCAVE_HULL": "",
+    "SHOW_TREE_DIAGRAM": "",
+    "SHOW_MAP":"t",
+    "SHOW_NOTHING":"t",
+
+    "SPLIT_THRESHOLD_FUNC_CLASS": "SIZE_INVERSE",
+    "SPLIT_THRESHOLD_CONST_VALUE":"0.1",
+
+    "OUTPUT_FILE": ".\\results\\results_exp1_nInit15.csv"
+}

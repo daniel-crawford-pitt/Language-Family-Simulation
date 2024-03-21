@@ -1,6 +1,7 @@
 from utils import *
-config = read_config('.\config_files\config_exp1.json')
-
+config_file = '.\config_files\config_exp1_nInit5.json'
+config = read_config(config_file)
+N_RUNS = 10
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
@@ -30,12 +31,12 @@ with open(os.path.abspath(config['OUTPUT_FILE']), 'a') as f:
 
 
 
-for i in range(2):
+for i in range(N_RUNS):
     os.environ['LANG_ID_CTR'] = "1"
     #Sim Env
     t_start = time.time()
 
-    config = read_config('.\config_files\config_exp1.json')
+    config = read_config(config_file)
     #print('Config Read!')
 
     t_config = time.time()
@@ -59,3 +60,5 @@ for i in range(2):
     #print(f"TotalT: \t{time_ha-t0} s.")
 
     print(f"Sim Number {i+1}; Sim Time: {round(time.time()-t_start,2)}; Total Time: {round(time.time()-t0,2)}")
+
+
