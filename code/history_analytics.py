@@ -25,15 +25,16 @@ def history_analysis(lhs, output_file, test_mode = False):
     all_history_dict = parse_histories(all_lang_histories)
     alive_history_dict = parse_histories(alive_language_histories)
     
-    true_tree = dict_to_tree(all_history_dict)
+    #true_tree = dict_to_tree(all_history_dict)
 
     #print("TRUE TREE")
+    #print(alive_history_dict)
     #hprint_tree(true_tree)
     #print(history_metrics(true_tree))
     
 
-    adjusted_history_dict = adjust_horizon(alive_history_dict, 50)
-    adjusted_tree = dict_to_tree(adjusted_history_dict)    
+    #adjusted_history_dict = adjust_horizon(alive_history_dict, 50)
+    #adjusted_tree = dict_to_tree(adjusted_history_dict)    
     #print("\nADJUSTED TREE")
     #hprint_tree(adjusted_tree)
     #print(history_metrics(adjusted_tree))
@@ -45,6 +46,7 @@ def history_analysis(lhs, output_file, test_mode = False):
         adjusted_tree = dict_to_tree(adjusted_history_dict)  
         output_row.append(history_metrics(adjusted_tree)[2])
 
+    
     with open(os.path.abspath(output_file), 'a') as f:
         writer = csv.writer(f)
         writer.writerow(output_row)
@@ -76,15 +78,17 @@ def parse_histories(lhs):
         return cdk_dict
 
 def adjust_horizon(cdk_dict, adjust_time):
+    #print(f"Adjustment Time: {adjust_time}")
     for v in cdk_dict.values():
+        #print(f"Old T-start: {v['t_start']}")
         v['t_start'] = str(int(v['t_start']) - adjust_time)
 
     #print(cdk_dict)
-    #root.show(attr_list=["t_start"])
+    #dict_to_tree(cdk_dict).show(attr_list=["t_start"])
     
     new_dict = {}
     for k,v in cdk_dict.items():
-        if int(v['t_start']) > 0:
+        if int(v['t_start']) >= 0:
             new_dict[k] = v
         else:
             new_dict['INITIAL/'+k.split('/')[-2]] = v
@@ -122,4 +126,4 @@ if __name__ == "__main__":
 ]
     
 
-    history_analysis(test_histories)
+    history_analysis(test_histories, None)

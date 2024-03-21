@@ -1,9 +1,5 @@
-from utils import *
-config_file = '.\config_files\config_exp1_nInit5.json'
-config = read_config(config_file)
-N_RUNS = 10
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+
 
 from objects.language import *
 from objects.env import *
@@ -14,29 +10,21 @@ import time
 import numpy as np
 import os
 
-t0 = time.time()
 
-output_row = np.arange(0,91,10)
+from utils import *
+config_file = '.\config_files\config_exp1_base.json'
+multi_config_file = '.\multi_config_files\exp1.json'
 
-import os
-if os.path.exists(os.path.abspath(config['OUTPUT_FILE'])):
-  os.remove(os.path.abspath(config['OUTPUT_FILE']))
-else:
-    pass
-  #print("The file does not exist")
+config = read_config(config_file)
 
-with open(os.path.abspath(config['OUTPUT_FILE']), 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow(output_row)
-
-
-
-for i in range(N_RUNS):
+def main(config, n, total):
+  print(f"Beginning Simulation with Configuration {n} of {total}")
+  for i in range(config["NUM_SIM_RUNS"]):
+    t0 = time.time()
     os.environ['LANG_ID_CTR'] = "1"
     #Sim Env
     t_start = time.time()
 
-    config = read_config(config_file)
     #print('Config Read!')
 
     t_config = time.time()
@@ -61,4 +49,36 @@ for i in range(N_RUNS):
 
     print(f"Sim Number {i+1}; Sim Time: {round(time.time()-t_start,2)}; Total Time: {round(time.time()-t0,2)}")
 
+
+
+
+
+if multi_config_file is not None:
+    multi_config_dict, output_file = read_multi_config(multi_config_file)
+    config["OUTPUT_FILE"] = output_file
+
+    print("Multiple Runs with:")
+    print(combine_vals(multi_config_dict["change_vars"]))
+    print(f"Writing to: {output_file}\n")
+
+    output_row = ['Config'] + list(np.arange(0,config["NUM_SIM_RUNS"], 10))
+
+    with open(os.path.abspath(config['OUTPUT_FILE']), 'a') as f:
+            writer = csv.writer(f)
+            writer.writerow(output_row)
+    
+
+    combined_vals = combine_vals(multi_config_dict["change_vars"])
+    for mc_n, multi_con in enumerate(combined_vals):
+        #set con
+        os.environ["PRINT_PREAMBLE"] = str(multi_con)
+        print(os.environ["PRINT_PREAMBLE"])
+
+        
+        for key, val in multi_con.items():
+          config[key] = val
+
+          main(config, mc_n+1, len(combined_vals))
+
+        
 
