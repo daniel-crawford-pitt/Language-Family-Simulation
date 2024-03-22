@@ -11,9 +11,9 @@ import numpy as np
 
 
 def history_analysis(lhs, output_file, test_mode = False):
-    print('Histories: ===================================')
-    for lh in sorted(lhs): print(lh)
-    print('----------------------------------------------')
+    #print('Histories: ===================================')
+    #for lh in sorted(lhs): print(lh)
+    #print('----------------------------------------------')
     #for lh in sorted(lhs):
     #    print(lh)
 
@@ -60,7 +60,7 @@ def history_analysis(lhs, output_file, test_mode = False):
     
     #To Measure absouate count at time
 
-    dict_to_tree(all_history_dict).show(attr_list=["t_start","t_death"])
+    #dict_to_tree(all_history_dict).show(attr_list=["t_start","t_death"])
     for time in np.arange(0 ,int(os.environ["MAX_TIME_STEPS"])+1, 10):
         count = 0
         for l,t in all_history_dict.items():

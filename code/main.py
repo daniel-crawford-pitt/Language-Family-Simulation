@@ -16,7 +16,7 @@ config_file = '.\config_files\config_exp2_base.json'
 multi_config_file = '.\multi_config_files\exp2.json'
 
 config = read_config(config_file)
-
+time_total_start = time.time()
 def main(config, n, total):
   print(f"Beginning Simulation with Configuration {n} of {total}")
   for i in range(config["NUM_SIM_RUNS"]):
@@ -47,7 +47,7 @@ def main(config, n, total):
     #print("=============================")
     #print(f"TotalT: \t{time_ha-t0} s.")
 
-    print(f"Sim Number {i+1}; Sim Time: {round(time.time()-t_start,2)}; Total Time: {round(time.time()-t0,2)}")
+    print(f"Sim Number {i+1}; Sim Time: {round(time.time()-t_start,2)}; Total Time: {round(time.time()-time_total_start,2)}")
 
 
 
@@ -63,7 +63,7 @@ if multi_config_file is not None:
        os.remove(os.path.abspath(config["OUTPUT_FILE"]))
 
 
-    print("Multiple Runs with:")
+    print("\nMultiple Runs with:")
     print(combine_vals(multi_config_dict["change_vars"]))
     print(f"Writing to: {output_file}\n")
 
