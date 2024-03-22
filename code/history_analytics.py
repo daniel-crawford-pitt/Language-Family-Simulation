@@ -40,7 +40,7 @@ def history_analysis(lhs, output_file, test_mode = False):
     #print(history_metrics(adjusted_tree))
 
     #Write to outputfile
-    output_row = []
+    output_row = [os.environ["PRINT_PREAMBLE"]]
     for h in np.arange(0,91,10):
         adjusted_history_dict = adjust_horizon(alive_history_dict, h)
         adjusted_tree = dict_to_tree(adjusted_history_dict)  

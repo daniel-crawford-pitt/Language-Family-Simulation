@@ -57,11 +57,17 @@ if multi_config_file is not None:
     multi_config_dict, output_file = read_multi_config(multi_config_file)
     config["OUTPUT_FILE"] = output_file
 
+    #clear output file
+
+    if os.path.exists(os.path.abspath(config["OUTPUT_FILE"])):
+       os.remove(os.path.abspath(config["OUTPUT_FILE"]))
+
+
     print("Multiple Runs with:")
     print(combine_vals(multi_config_dict["change_vars"]))
     print(f"Writing to: {output_file}\n")
 
-    output_row = ['Config'] + list(np.arange(0,config["NUM_SIM_RUNS"], 10))
+    output_row = ['Config'] + list(np.arange(0 ,config["MAX_TIME_STEPS"], 10))
 
     with open(os.path.abspath(config['OUTPUT_FILE']), 'a') as f:
             writer = csv.writer(f)
@@ -72,7 +78,7 @@ if multi_config_file is not None:
     for mc_n, multi_con in enumerate(combined_vals):
         #set con
         os.environ["PRINT_PREAMBLE"] = str(multi_con)
-        print(os.environ["PRINT_PREAMBLE"])
+        
 
         
         for key, val in multi_con.items():
