@@ -12,8 +12,8 @@ import os
 
 
 from utils import *
-config_file = '.\config_files\config_exp1_base.json'
-multi_config_file = '.\multi_config_files\exp1.json'
+config_file = '.\config_files\config_exp2_base.json'
+multi_config_file = '.\multi_config_files\exp2.json'
 
 config = read_config(config_file)
 
@@ -67,7 +67,9 @@ if multi_config_file is not None:
     print(combine_vals(multi_config_dict["change_vars"]))
     print(f"Writing to: {output_file}\n")
 
-    output_row = ['Config'] + list(np.arange(0 ,config["MAX_TIME_STEPS"], 10))
+
+    os.environ["MAX_TIME_STEPS"] = str(config["MAX_TIME_STEPS"])
+    output_row = ['Config'] + list(np.arange(0 ,config["MAX_TIME_STEPS"]+1, 10))
 
     with open(os.path.abspath(config['OUTPUT_FILE']), 'a') as f:
             writer = csv.writer(f)

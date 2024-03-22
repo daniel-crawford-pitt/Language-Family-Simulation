@@ -1,6 +1,6 @@
 {
 
-    "OUTPUT_FILE": ".\\results\\results_exp1.csv",
+    "OUTPUT_FILE": ".\\results\\results_exp2.csv",
 
     "change_vars":{
         "NUM_INIT_LANGS":  [5,10,15]
