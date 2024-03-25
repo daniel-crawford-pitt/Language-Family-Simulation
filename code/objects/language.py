@@ -66,7 +66,7 @@ class Language:
         match SPLIT_THRESHOLD_FUNC_CLASS: #function class is set in config, different values depending on func class
             case 'SIZE_INVERSE': #sine function
                 #self.split_threshold = np.sum(self.map)/10000.0*0.01
-                self.split_threshold = (np.exp(np.log(2)/10000.0*np.sum(self.map))-1)*0.1
+                self.split_threshold = float(os.environ["SPLIT_THRESHOLD_MULTIPLIER"])*(np.exp(np.log(2)/(float(os.environ['FIELD_SIZE_1DIM'])**2)*np.sum(self.map))-1)*0.1
             case 'CONSTANT': #constant
                 self.split_threshold = self.SPLIT_THRESHOLD_CONST_VALUE
             
@@ -92,7 +92,7 @@ class Language:
         match self.SPLIT_THRESHOLD_FUNC_CLASS: #function class is set in config, different values depending on func class
             case 'SIZE_INVERSE': #sine function
                 #self.split_threshold = np.sum(self.map)/10000.0*0.01
-                self.split_threshold = (np.exp(np.log(2)/10000.0*np.sum(self.map))-1)*0.1
+                self.split_threshold = float(os.environ["SPLIT_THRESHOLD_MULTIPLIER"])*(np.exp(np.log(2)/(float(os.environ['FIELD_SIZE_1DIM'])**2)*np.sum(self.map))-1)*0.1
             case 'CONSTANT': #constant
                 self.split_threshold = self.SPLIT_THRESHOLD_CONST_VALUE
             

@@ -1,0 +1,9 @@
+{
+
+    "OUTPUT_FILE": ".\\results\\results_exp3_250steps_size500.csv",
+
+    "change_vars":{
+        "NUM_INIT_LANGS":  [5,10]
+    }
+
+}

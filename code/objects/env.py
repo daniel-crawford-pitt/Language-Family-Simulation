@@ -25,6 +25,7 @@ class Env:
         self.MAX_NUMBER_LANGUAGES = config["MAX_NUMBER_LANGUAGES"]
 
         self.FIELD_SIZE_1DIM = config["FIELD_SIZE_1DIM"]
+        os.environ['FIELD_SIZE_1DIM'] = str(config["FIELD_SIZE_1DIM"])
         self.FIELD_SIZE_TUPLE = (config['FIELD_SIZE_1DIM'],config['FIELD_SIZE_1DIM'])
         self.PRINT_t_EVERY = float(config["PRINT_t_EVERY"])
 
@@ -326,7 +327,7 @@ class Env:
     def do_splits(self):
         for i,l in enumerate(self.languages):
             if l is not None and l.alive and None in self.languages:
-                 if np.random.rand() < l.split_threshold:
+                 if np.random.rand() < float(l.split_threshold):
 
                     # Assuming you have a numpy array of points in the form [(x1, y1), (x2, y2), ...]
                     (As, Bs) = np.where(l.map > 0.001)

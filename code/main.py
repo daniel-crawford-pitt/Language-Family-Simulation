@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-
+from multiprocessing import Process
 
 from objects.language import *
 from objects.env import *
@@ -12,8 +12,8 @@ import os
 
 
 from utils import *
-config_file = '.\config_files\config_exp2_base.json'
-multi_config_file = '.\multi_config_files\exp2.json'
+config_file = '.\config_files\config_exp6_base.json'
+multi_config_file = '.\multi_config_files\exp6.json'
 
 config = read_config(config_file)
 time_total_start = time.time()
@@ -22,15 +22,24 @@ def main(config, n, total):
   for i in range(config["NUM_SIM_RUNS"]):
     t0 = time.time()
     os.environ['LANG_ID_CTR'] = "1"
+    os.environ["SPLIT_THRESHOLD_MULTIPLIER"] = config["SPLIT_THRESHOLD_MULTIPLIER"]
     #Sim Env
     t_start = time.time()
 
     #print('Config Read!')
 
     t_config = time.time()
+
+    
+
     env = Env(config)
     t_env = time.time()
-    sim_anim = env.sim(config)
+    env.sim(config)
+
+    
+
+    
+    
     t_sim = time.time()
     plt.show()
     #print('Simulation Complete Done!')
@@ -56,6 +65,7 @@ def main(config, n, total):
 if multi_config_file is not None:
     multi_config_dict, output_file = read_multi_config(multi_config_file)
     config["OUTPUT_FILE"] = output_file
+
 
     #clear output file
 

@@ -1,0 +1,9 @@
+{
+
+    "OUTPUT_FILE": ".\\results\\results_expF.csv",
+
+    "change_vars":{
+        "SPLIT_THRESHOLD_MULTIPLIER":  ["1","5","10","25","50","100"]
+    }
+
+}

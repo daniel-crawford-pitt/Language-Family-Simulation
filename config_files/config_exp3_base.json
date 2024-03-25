@@ -1,12 +1,12 @@
 {
        
-    "MAX_NUMBER_LANGUAGES": 100,
-    "MAX_TIME_STEPS": 500,
+    "MAX_NUMBER_LANGUAGES": 1000,
+    "MAX_TIME_STEPS": 250,
     "NUM_INIT_LANGS":  10,
-    "FIELD_SIZE_1DIM": 100,
+    "FIELD_SIZE_1DIM": 500,
     "PRINT_t_EVERY" : 50,
 
-    "NUM_SIM_RUNS" : 100,
+    "NUM_SIM_RUNS" : 5,
 
     "MOMENTUM_FUNC_CLASS": "CONSTANT",
     "MOMENTUM_FUNC_STATIC_BOOL": "",
@@ -17,7 +17,8 @@
     "SHOW_NOTHING":"t",
 
     "SPLIT_THRESHOLD_FUNC_CLASS": "SIZE_INVERSE",
+    "SPLIT_THRESHOLD_MULTIPLIER": "1.0",
     "SPLIT_THRESHOLD_CONST_VALUE":"0.1",
 
-    "OUTPUT_FILE": ".\\results\\results_exp2_base.csv"
+    "OUTPUT_FILE": ".\\results\\results_exp3_base.csv"
 }
