@@ -12,8 +12,8 @@ import os
 
 
 from utils import *
-config_file = '.\config_files\config_test_IM.json'
-multi_config_file = '.\multi_config_files\\testIM.json'
+config_file = '.\config_files\config_test_pres.json'
+multi_config_file = '.\multi_config_files\\test_pres.json'
 
 config = read_config(config_file)
 time_total_start = time.time()
@@ -79,10 +79,16 @@ if multi_config_file is not None:
 
 
     os.environ["MAX_TIME_STEPS"] = str(config["MAX_TIME_STEPS"])
-    output_row = ['Config'] + list(np.arange(0 ,config["MAX_TIME_STEPS"]+1, 10))
+    
+    output_row = ['Config', 'Absolute'] #+ list(np.arange(0 ,config["MAX_TIME_STEPS"]+1, 10))
+    for t in np.arange(0,config['MAX_TIME_STEPS']+1,10):
+        output_row.append(f't{t}_true')
+        for h in np.arange(0,t+1,10):
+            output_row.append(f't{t}_h{h}')
+        
 
     with open(os.path.abspath(config['OUTPUT_FILE']), 'a') as f:
-            writer = csv.writer(f)
+            writer = csv.writer(f, delimiter='\t')
             writer.writerow(output_row)
     
 

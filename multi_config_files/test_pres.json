@@ -1,0 +1,9 @@
+{
+
+    "OUTPUT_FILE": ".\\results\\results_test_pres.csv",
+
+    "change_vars":{
+        "MOMENTUM_WEIGHT":  [0,1]
+    }
+
+}

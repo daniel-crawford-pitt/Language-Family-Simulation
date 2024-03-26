@@ -20,28 +20,69 @@ def history_analysis(lhs, output_file, test_mode = False):
 
     all_lang_histories, alive_language_histories = sep_alive_langs(lhs)
     
-    #Parse Histories
-    print("TRUE TREE")
-    all_history_dict = parse_histories(all_lang_histories)
-    all_history_dict = add_death_times(all_history_dict,lhs)
-    absolute_tree = dict_to_tree(all_history_dict)
-    absolute_tree.show(attr_list=["t_start","t_death"])
-    print(history_metrics(absolute_tree))
 
+    if test_mode:
+        print("TRUE TREE")
+        all_history_dict = parse_histories(all_lang_histories)
+        all_history_dict = add_death_times(all_history_dict,lhs)
+        all_history_dict = constrain_to_time(all_history_dict,50)
+        absolute_tree = dict_to_tree(all_history_dict)
+        absolute_tree.show(attr_list=["t_start","t_death"])
+        true_hist_metrics = history_metrics(absolute_tree)
+        print(true_hist_metrics)
+        #output_row.append(true_hist_metrics)
 
-    print("APPARENT TREE")
-    alive_history_dict = parse_histories(alive_language_histories) 
-    alive_history_dict = add_death_times(alive_history_dict,lhs)    
-    adjusted_history_dict = adjust_horizon(alive_history_dict, 0)
-    adjusted_tree = dict_to_tree(adjusted_history_dict)
-    adjusted_tree.show(attr_list=["t_start","t_death"])
-    print(history_metrics(adjusted_tree))
+        print("APPARENT TREE")
+        alive_history_dict = parse_histories(alive_language_histories) 
+        alive_history_dict = add_death_times(alive_history_dict,lhs)    
+        alive_history_dict = constrain_to_time(alive_history_dict,100)
+        adjusted_history_dict = adjust_horizon(alive_history_dict, 95)
+        adjusted_tree = dict_to_tree(adjusted_history_dict)
+        adjusted_tree.show(attr_list=["t_start","t_death"])
+        apparent_hist_metrics = history_metrics(adjusted_tree)
+        print(apparent_hist_metrics)
 
+        #output_row.append(apparent_hist_metrics)
 
+        assert False
 
 
     #Write to outputfile
     output_row = [os.environ["PRINT_PREAMBLE"]]
+
+    
+    for t in np.arange(0,int(os.environ["MAX_TIME_STEPS"])+1,10):
+
+        print("TRUE TREE")
+        all_history_dict = parse_histories(all_lang_histories)
+        all_history_dict = add_death_times(all_history_dict,lhs)
+        all_history_dict = constrain_to_time(all_history_dict,t)
+        absolute_tree = dict_to_tree(all_history_dict)
+        #absolute_tree.show(attr_list=["t_start","t_death"])
+        true_hist_metrics = history_metrics(absolute_tree)
+        #print(true_hist_metrics)
+        output_row.append(true_hist_metrics)
+
+
+        for h in np.arange(0,t+1,10):                   
+            print("APPARENT TREE")
+            alive_history_dict = parse_histories(alive_language_histories) 
+            alive_history_dict = add_death_times(alive_history_dict,lhs)    
+            alive_history_dict = constrain_to_time(alive_history_dict,t)
+            adjusted_history_dict = adjust_horizon(alive_history_dict, h)
+            adjusted_tree = dict_to_tree(adjusted_history_dict)
+            #adjusted_tree.show(attr_list=["t_start","t_death"])
+            apparent_hist_metrics = history_metrics(adjusted_tree)
+            output_row.append(apparent_hist_metrics)
+
+
+
+
+    with open(os.path.abspath(output_file), 'a') as f:
+            writer = csv.writer(f, delimiter='\t')
+            writer.writerow(output_row)
+
+    
 
     #To measure arratent count
     """for h in np.arange(0,101,10):
@@ -53,9 +94,8 @@ def history_analysis(lhs, output_file, test_mode = False):
 
     
 
-    assert False
 
-    #dict_to_tree(all_history_dict).show(attr_list=["t_start","t_death"])
+    """    #dict_to_tree(all_history_dict).show(attr_list=["t_start","t_death"])
     for time in np.arange(0 ,int(os.environ["MAX_TIME_STEPS"])+1, 10):
         count = 0
         for l,t in all_history_dict.items():
@@ -65,19 +105,16 @@ def history_analysis(lhs, output_file, test_mode = False):
             else:
                 #print(f"Lg {l} dead at time {time} becuase {t}")
                 pass
-        
-        
 
-        
-        output_row.append(count)
+        output_row.append(count)"""
 
     
 
 
     
-    with open(os.path.abspath(output_file), 'a') as f:
-        writer = csv.writer(f, delimiter='\t')
-        writer.writerow(output_row)
+    
+def constrain_to_time(d,t):
+    return {k:v for k,v in d.items() if int(v['t_start']) <= t}
 
 def add_death_times(hd, lhs):
     #for k,v in hd.items(): print(f"{k} : {v}")
@@ -193,11 +230,9 @@ def parse_histories(lhs):
         return cdk_dict
 
 def adjust_horizon(cdk_dict, adjust_time):
-    
-
-    
+   
     for v in cdk_dict.values():
-        if int(v['t_death']) <= adjust_time:
+        if int(v['t_death']) < adjust_time:
             v['seen'] = '0'
         else:
             v['seen'] = '1'
@@ -358,4 +393,4 @@ if __name__ == "__main__":
         'START_0_L004+START_53_L017+DEATH_96+',
         'START_0_L005+'
     ]
-    history_analysis(test_histories4, None)
+    history_analysis(test_histories4, None, test_mode=True)

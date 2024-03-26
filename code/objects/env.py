@@ -42,6 +42,7 @@ class Env:
         self.MOMENTUM_FUNC_CLASS = config["MOMENTUM_FUNC_CLASS"]
         self.MOMENTUM_FUNC_STATIC_BOOL = config["MOMENTUM_FUNC_STATIC_BOOL"]
         self.SPLIT_THRESHOLD_CONST_VALUE = config["SPLIT_THRESHOLD_CONST_VALUE"]
+        self.MOMENTUM_WEIGHT = float(config["MOMENTUM_WEIGHT"])
         
 
 
@@ -283,18 +284,19 @@ class Env:
                     #Find other patches:
                     for j in [k for k in list(np.arange(0,self.MAX_NUMBER_LANGUAGES,1)) if k != i]:
                         if self.hull_points[j] is not None and self.languages[j] is not None and l.momentum <= self.languages[j].momentum:
-                            
+                            if np.random.random() < self.MOMENTUM_WEIGHT:
                             #print(l.momentum)
                             #print(self.languages[i].momentum)
 
-                            try:
-                                other_ling_areas = \
-                                    other_ling_areas |\
-                                    np.array(Delaunay(self.hull_points[j]).find_simplex(
-                                        [(ii,ji) for ii in np.arange(0,self.FIELD_SIZE_1DIM,1) for ji in np.arange(0,self.FIELD_SIZE_1DIM,1)]
-                                    )>=0).reshape(self.FIELD_SIZE_1DIM,self.FIELD_SIZE_1DIM).T
-                            except:
-                                pass
+                                try:
+                                    other_ling_areas = \
+                                        other_ling_areas |\
+                                        np.array(Delaunay(self.hull_points[j]).find_simplex(
+                                            [(ii,ji) for ii in np.arange(0,self.FIELD_SIZE_1DIM,1) for ji in np.arange(0,self.FIELD_SIZE_1DIM,1)]
+                                        )>=0).reshape(self.FIELD_SIZE_1DIM,self.FIELD_SIZE_1DIM).T
+                                except:
+                                    pass
+                            
                     
                 
                 l.step(other_ling_areas)

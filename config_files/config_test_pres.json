@@ -1,0 +1,25 @@
+{
+       
+    "MAX_NUMBER_LANGUAGES": 1000,
+    "MAX_TIME_STEPS": 100,
+    "NUM_INIT_LANGS":  30,
+    "FIELD_SIZE_1DIM": 100,
+    "PRINT_t_EVERY" : 50,
+
+    "NUM_SIM_RUNS" : 3,
+
+    "MOMENTUM_FUNC_CLASS": "CONSTANT",
+    "MOMENTUM_FUNC_STATIC_BOOL": "",
+    "MOMENTUM_WEIGHT": 1,
+
+    "SHOW_CONCAVE_HULL": "",
+    "SHOW_TREE_DIAGRAM": "",
+    "SHOW_MAP":"t",
+    "SHOW_NOTHING":"t",
+
+    "SPLIT_THRESHOLD_FUNC_CLASS": "SIZE_INVERSE",
+    "SPLIT_THRESHOLD_MULTIPLIER": "5",
+    "SPLIT_THRESHOLD_CONST_VALUE":"0.1",
+
+    "OUTPUT_FILE": ".\\results\\results_test_pres.csv"
+}
