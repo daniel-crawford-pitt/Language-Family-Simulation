@@ -12,8 +12,8 @@ import os
 
 
 from utils import *
-config_file = '.\config_files\config_exp6_base.json'
-multi_config_file = '.\multi_config_files\exp6.json'
+config_file = '.\config_files\config_test_IM.json'
+multi_config_file = '.\multi_config_files\\testIM.json'
 
 config = read_config(config_file)
 time_total_start = time.time()

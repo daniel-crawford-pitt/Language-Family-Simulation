@@ -1,0 +1,9 @@
+{
+
+    "OUTPUT_FILE": ".\\results\\results_test_IM.csv",
+
+    "change_vars":{
+        "NUM_INIT_LANGS":  [5]
+    }
+
+}
