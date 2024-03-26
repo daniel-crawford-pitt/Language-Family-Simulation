@@ -53,7 +53,7 @@ def history_analysis(lhs, output_file, test_mode = False):
     
     for t in np.arange(0,int(os.environ["MAX_TIME_STEPS"])+1,10):
 
-        print("TRUE TREE")
+        #print("TRUE TREE")
         all_history_dict = parse_histories(all_lang_histories)
         all_history_dict = add_death_times(all_history_dict,lhs)
         all_history_dict = constrain_to_time(all_history_dict,t)
@@ -65,7 +65,7 @@ def history_analysis(lhs, output_file, test_mode = False):
 
 
         for h in np.arange(0,t+1,10):                   
-            print("APPARENT TREE")
+            #print("APPARENT TREE")
             alive_history_dict = parse_histories(alive_language_histories) 
             alive_history_dict = add_death_times(alive_history_dict,lhs)    
             alive_history_dict = constrain_to_time(alive_history_dict,t)

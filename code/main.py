@@ -13,7 +13,7 @@ import os
 
 from utils import *
 config_file = '.\config_files\config_test_pres.json'
-multi_config_file = '.\multi_config_files\\test_pres.json'
+multi_config_file = '.\multi_config_files\\pres.json'
 
 config = read_config(config_file)
 time_total_start = time.time()
