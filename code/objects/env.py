@@ -369,7 +369,7 @@ class Env:
                             MOMENTUM_FUNC_CLASS = self.MOMENTUM_FUNC_CLASS,
                             SPLIT_THRESHOLD_CONST_VALUE = self.SPLIT_THRESHOLD_CONST_VALUE,
                             MOMENTUM_FUNC_STATIC_BOOL = self.MOMENTUM_FUNC_STATIC_BOOL,
-                            
+                            inherited_momentum= l.momentum,
                             prev_history=l.history
                         )
 

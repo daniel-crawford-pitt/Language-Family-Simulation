@@ -12,6 +12,7 @@ class Language:
     def __init__(self, starting_point, color, start_time, start_map = None,
                  SPLIT_THRESHOLD_FUNC_CLASS = None, MOMENTUM_FUNC_CLASS = None,
                  SPLIT_THRESHOLD_CONST_VALUE = None,  MOMENTUM_FUNC_STATIC_BOOL = None,
+                 inherited_momentum = None,
                 prev_history = ""):
         """ 
         starting_point: tuple(int, int) - the point that the language originated - NOT CURRENTLY USED
@@ -51,16 +52,27 @@ class Language:
         #increment the environmental variable for language counters by 1
         os.environ['LANG_ID_CTR'] = str(int(os.environ.get('LANG_ID_CTR'))+1)
         
+        if inherited_momentum is None:
+            #Initialize a momentum value
+            match MOMENTUM_FUNC_CLASS: #function class is set in config, different values depending on func class
+                case 'SIN': #sine function
+                    self.A = 20*np.random.random()-10 #amplitude
+                    self.p = 20*np.random.random()-10 #period
+                    self.momentum = self.A * np.sin(self.p*self.start_time) #calculate - need t 
+                case 'CONSTANT': #constant
+                    self.m = np.random.random() #select randomly
+                    self.momentum = self.m
+        else:
+            match MOMENTUM_FUNC_CLASS: #function class is set in config, different values depending on func class
+                case 'SIN': #sine function
+                    raise("CANT INHERIT SIN MOMENTUM")
+                    #self.A = 20*np.random.random()-10 #amplitude
+                    #self.p = 20*np.random.random()-10 #period
+                    #self.momentum = self.A * np.sin(self.p*self.start_time) #calculate - need t 
+                case 'CONSTANT': #constant
+                    self.m = np.clip(inherited_momentum+(np.random.random()*0.2-0.1),0,1) #select randomly
+                    self.momentum = self.m
 
-        #Initialize a momentum value
-        match MOMENTUM_FUNC_CLASS: #function class is set in config, different values depending on func class
-            case 'SIN': #sine function
-                self.A = 20*np.random.random()-10 #amplitude
-                self.p = 20*np.random.random()-10 #period
-                self.momentum = self.A * np.sin(self.p*self.start_time) #calculate - need t 
-            case 'CONSTANT': #constant
-                self.m = np.random.random() #select randomly
-                self.momentum = self.m
             
         #Initialize Split Threshold
         match SPLIT_THRESHOLD_FUNC_CLASS: #function class is set in config, different values depending on func class
