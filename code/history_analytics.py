@@ -31,16 +31,14 @@ def history_analysis(lhs, output_file, test_mode = False):
 
     print("APPARENT TREE")
     alive_history_dict = parse_histories(alive_language_histories) 
-    alive_history_dict = add_death_times(alive_history_dict,lhs)
-    adjusted_history_dict = adjust_horizon(alive_history_dict, 90)
+    alive_history_dict = add_death_times(alive_history_dict,lhs)    
+    adjusted_history_dict = adjust_horizon(alive_history_dict, 0)
     adjusted_tree = dict_to_tree(adjusted_history_dict)
     adjusted_tree.show(attr_list=["t_start","t_death"])
     print(history_metrics(adjusted_tree))
 
 
 
-    
-    assert False
 
     #Write to outputfile
     output_row = [os.environ["PRINT_PREAMBLE"]]
@@ -195,14 +193,18 @@ def parse_histories(lhs):
         return cdk_dict
 
 def adjust_horizon(cdk_dict, adjust_time):
+    
 
+    
     for v in cdk_dict.values():
-        if int(v['t_start']) <= adjust_time:
+        if int(v['t_death']) <= adjust_time:
             v['seen'] = '0'
         else:
             v['seen'] = '1'
 
+    
     new_dict = {k:v for k,v in cdk_dict.items() if bool(int(v['seen']))}
+    
     new_dict = squish_dict(new_dict)
     
     return new_dict
@@ -225,14 +227,45 @@ def adjust_horizon(cdk_dict, adjust_time):
 
 
 def squish_dict(d):
-    seen_langs = [k.split('/')[-2] for k in d.keys()]+['INITIAL']
+    #print(d)
+
+    seen_langs = ['INITIAL']
+    for k in d.keys():
+        if k.endswith('/'):
+            seen_langs.append(k.split('/')[-2])
+        else:
+            seen_langs.append((k+'/').split('/')[-2])
+
     
-    new_keys  = ['/'.join([l for l in k.split('/')[:-1] if l in seen_langs])+'/' for k in d.keys()]
+    #print(seen_langs)
+
     
+    new_keys = []
+    for k in d.keys():
+        #print(k)
+        if k.endswith('/'):
+            new_keys.append('/'.join([l for l in k.split('/')[:-1] if l in seen_langs]))
+        else:
+            new_keys.append('/'.join([l for l in k.split('/') if l in seen_langs]))
+
+    #new_keys  = ['/'.join([l for l in k.split('/')[:-1] if l in seen_langs])+'/' for k in d.keys()]
+    
+    #for k,v in d.items():
+    #    print(f"{k}\t{v}")
+
+    #print(new_keys)
+
+
 
     new_key_map = {}
-    for old in d.keys(): 
-        new = [nk for nk in new_keys if nk.endswith(old[-5:])][0]
+    for old in d.keys():
+        if old.endswith('/'):
+            #print(old[-5:-1])
+            new = [nk for nk in new_keys if nk.endswith(old[-5:-1])][0]
+        else:
+            #print(old[-5:])
+            new = [nk for nk in new_keys if nk.endswith(old[-5:])][0]
+
         #print(f"Replacing {old} with {new}")
 
         new_key_map[old] = new
