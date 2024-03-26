@@ -16,38 +16,31 @@ def history_analysis(lhs, output_file, test_mode = False):
     #print('----------------------------------------------')
     #for lh in sorted(lhs):
     #    print(lh)
-
-    all_lang_histories, alive_language_histories = sep_alive_langs(lhs)
-
-    
-
     #print(all_lang_histories,"\n ======== \n",alive_language_histories)
 
+    all_lang_histories, alive_language_histories = sep_alive_langs(lhs)
     
+    #Parse Histories
+    print("TRUE TREE")
     all_history_dict = parse_histories(all_lang_histories)
-    #alive_history_dict = parse_histories(alive_language_histories)
-
-
-    #print(all_history_dict)
     all_history_dict = add_death_times(all_history_dict,lhs)
-    #print(all_history_dict)
-    
-    #alive_history_dict = add_death_times(alive_history_dict,lhs)
-    
-    true_tree = dict_to_tree(all_history_dict)
+    absolute_tree = dict_to_tree(all_history_dict)
+    absolute_tree.show(attr_list=["t_start","t_death"])
+    print(history_metrics(absolute_tree))
 
-    #print("TRUE TREE")
-    #true_tree.show(attr_list=["t_start","t_death"])
-    #print(alive_history_dict)
-    #hprint_tree(true_tree)
-    #print(history_metrics(true_tree))
-    
 
-    #adjusted_history_dict = adjust_horizon(alive_history_dict, 50)
-    #adjusted_tree = dict_to_tree(adjusted_history_dict)    
-    #print("\nADJUSTED TREE")
-    #hprint_tree(adjusted_tree)
-    #print(history_metrics(adjusted_tree))
+    print("APPARENT TREE")
+    alive_history_dict = parse_histories(alive_language_histories) 
+    alive_history_dict = add_death_times(alive_history_dict,lhs)
+    adjusted_history_dict = adjust_horizon(alive_history_dict, 90)
+    adjusted_tree = dict_to_tree(adjusted_history_dict)
+    adjusted_tree.show(attr_list=["t_start","t_death"])
+    print(history_metrics(adjusted_tree))
+
+
+
+    
+    assert False
 
     #Write to outputfile
     output_row = [os.environ["PRINT_PREAMBLE"]]
@@ -59,6 +52,10 @@ def history_analysis(lhs, output_file, test_mode = False):
         output_row.append(history_metrics(adjusted_tree)[2])"""
     
     #To Measure absouate count at time
+
+    
+
+    assert False
 
     #dict_to_tree(all_history_dict).show(attr_list=["t_start","t_death"])
     for time in np.arange(0 ,int(os.environ["MAX_TIME_STEPS"])+1, 10):
@@ -171,9 +168,6 @@ def expand_histories(lhs):
     #assert False
     return list(set(new_lhs))
 
-    
-
-
 def parse_histories(lhs):
         #for lh in sorted(lhs): print(lh)
         #print('==========')
@@ -201,22 +195,54 @@ def parse_histories(lhs):
         return cdk_dict
 
 def adjust_horizon(cdk_dict, adjust_time):
-    #print(f"Adjustment Time: {adjust_time}")
+
     for v in cdk_dict.values():
+        if int(v['t_start']) <= adjust_time:
+            v['seen'] = '0'
+        else:
+            v['seen'] = '1'
+
+    new_dict = {k:v for k,v in cdk_dict.items() if bool(int(v['seen']))}
+    new_dict = squish_dict(new_dict)
+    
+    return new_dict
+
+    #print(f"Adjustment Time: {adjust_time}")
+    """for v in cdk_dict.values():
         #print(f"Old T-start: {v['t_start']}")
         v['t_start'] = str(int(v['t_start']) - adjust_time)
+        v['t_death'] = str(int(v['t_death']) - adjust_time)
 
-    #print(cdk_dict)
-    #dict_to_tree(cdk_dict).show(attr_list=["t_start"])
     
     new_dict = {}
     for k,v in cdk_dict.items():
-        if int(v['t_start']) >= 0:
+        if int(v['t_start']) >= 0 and int(v['t_death']) > 0:
             new_dict[k] = v
         else:
             new_dict['INITIAL/'+k.split('/')[-2]] = v
 
-    return new_dict
+    return new_dict"""
+
+
+def squish_dict(d):
+    seen_langs = [k.split('/')[-2] for k in d.keys()]+['INITIAL']
+    
+    new_keys  = ['/'.join([l for l in k.split('/')[:-1] if l in seen_langs])+'/' for k in d.keys()]
+    
+
+    new_key_map = {}
+    for old in d.keys(): 
+        new = [nk for nk in new_keys if nk.endswith(old[-5:])][0]
+        #print(f"Replacing {old} with {new}")
+
+        new_key_map[old] = new
+    
+
+    new_d = {}
+    for k,v in d.items():
+        new_d[new_key_map[k]] = v
+        
+    return new_d
 
 def history_metrics(tree):   
     
